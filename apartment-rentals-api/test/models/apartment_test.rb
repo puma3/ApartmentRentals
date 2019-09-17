@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
-class AppartmentTest < ActiveSupport::TestCase
+class ApartmentTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

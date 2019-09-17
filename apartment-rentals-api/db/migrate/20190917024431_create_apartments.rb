@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class CreateAppartments < ActiveRecord::Migration[6.0]
+class CreateApartments < ActiveRecord::Migration[6.0]
   def change
-    create_table :appartments do |t|
+    create_table :apartments do |t|
       t.string :name
       t.string :description
       t.float :floor_area_size
@@ -12,7 +12,7 @@ class CreateAppartments < ActiveRecord::Migration[6.0]
       t.float :latitude
       t.float :longitude
       t.boolean :available, default: true
-      t.references :user, null: false, foreign_key: true
+      t.references :realtor, null: false, foreign_key: { to_table: :users }
 
       t.timestamps
     end
