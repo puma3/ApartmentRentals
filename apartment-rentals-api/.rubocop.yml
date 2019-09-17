@@ -1,0 +1,51 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - "vendor/**/*"
+    - "spec/fixtures/**/*"
+    - "tmp/**/*"
+    - "db/**"
+    - "bin/**/*"
+
+Metrics/ClassLength:
+  CountComments: false # count full line comments?
+  Max: 1000
+
+Metrics/LineLength:
+  Max: 800
+
+Metrics/MethodLength:
+  Max: 100
+
+Metrics/AbcSize:
+  Max: 150
+
+Metrics/BlockNesting:
+  Max: 30
+
+Metrics/BlockLength:
+  Max: 250
+
+Metrics/ModuleLength:
+  Max: 1000
+
+Metrics/CyclomaticComplexity:
+  Max: 60
+
+Metrics/PerceivedComplexity:
+  Max: 70
+
+Metrics/ParameterLists:
+  Max: 50
+
+Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Layout/EndAlignment:
+  AutoCorrect: true
