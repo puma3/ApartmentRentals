@@ -16,6 +16,6 @@ const cache = new InMemoryCache({
 })
 
 export const client = new ApolloClient({
-  uri: 'https://48p1r2roz4.sse.codesandbox.io',
+  uri: process.env.REACT_APP_API_URI,
   cache,
 })
