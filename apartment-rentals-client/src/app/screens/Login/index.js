@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import gql from 'graphql-tag'
+import { useMutation } from '@apollo/react-hooks'
 
+import CURRENT_USER_QUERY from '../../shared/graphql/queries/currentUser.graphql'
 import { SIZES } from '../../shared/general/constants'
 
 import Avatar from '@material-ui/core/Avatar'
@@ -9,6 +12,19 @@ import Link from '@material-ui/core/Link'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
+import { Snackbar } from '@material-ui/core'
+
+const SIGN_IN_USER = gql`
+  mutation SignInUser($input: SignInUserInput!) {
+    signInUser(input: $input) {
+      user {
+        firstName
+        lastName
+        email
+      }
+    }
+  }
+`
 
 const LoginLayout = styled.div`
   display: grid;
@@ -30,47 +46,90 @@ const FormWrapper = styled.div`
   margin: 100px ${SIZES['ultra']} auto ${SIZES['ultra']};
 `
 
-const LoginForm = () => (
-  <React.Fragment>
-    <Typography component="h1" variant="h5">
-      Sign in
-    </Typography>
-    <form noValidate>
-      <TextField
-        variant="outlined"
-        margin="normal"
-        required
-        fullWidth
-        id="email"
-        label="Email Address"
-        name="email"
-        autoComplete="email"
-        autoFocus
-      />
-      <TextField
-        variant="outlined"
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
-        type="password"
-        id="password"
-        autoComplete="current-password"
-      />
+const LoginForm = ({ onError }) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [signInUserMutation, { client }] = useMutation(SIGN_IN_USER)
 
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="primary"
-        style={{ marginTop: SIZES['medium'] }}
+  const signInUser = async () => {
+    try {
+      const {
+        data: {
+          signInUser: { user },
+        },
+      } = await signInUserMutation({
+        variables: {
+          input: {
+            email: email,
+            password: password,
+          },
+        },
+      })
+
+      setPassword('')
+
+      client.writeQuery({
+        query: CURRENT_USER_QUERY,
+        data: { currentUser: user },
+      })
+
+      console.log('user', user)
+    } catch ({ graphQLErrors }) {
+      onError(graphQLErrors[0].message)
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <Typography component="h1" variant="h5">
+        Sign in
+      </Typography>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          signInUser()
+        }}
       >
-        Sign In
-      </Button>
-    </form>
-  </React.Fragment>
-)
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ marginTop: SIZES['medium'] }}
+        >
+          Sign In
+        </Button>
+      </form>
+    </React.Fragment>
+  )
+}
 
 const SignUpForm = () => (
   <React.Fragment>
@@ -139,7 +198,9 @@ const SignUpForm = () => (
 )
 
 const Login = props => {
+  console.log('props', props)
   const [showLoginForm, setShowLoginForm] = useState(true)
+  const [error, setError] = useState(null)
 
   let switchFormText = showLoginForm
     ? "Don't have an account? Sign Up"
@@ -152,7 +213,11 @@ const Login = props => {
         <Avatar>
           <LockOutlinedIcon />
         </Avatar>
-        {showLoginForm ? <LoginForm /> : <SignUpForm />}
+        {showLoginForm ? (
+          <LoginForm onError={setError} />
+        ) : (
+          <SignUpForm onError={setError} />
+        )}
         <Link
           onClick={() => setShowLoginForm(!showLoginForm)}
           variant="body2"
@@ -160,6 +225,12 @@ const Login = props => {
         >
           {switchFormText}
         </Link>
+        <Snackbar
+          open={Boolean(error)}
+          message={error}
+          onClose={() => setError(null)}
+          variant="error"
+        />
       </FormWrapper>
     </LoginLayout>
   )
