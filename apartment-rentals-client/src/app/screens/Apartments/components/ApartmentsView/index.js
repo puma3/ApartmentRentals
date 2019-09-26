@@ -32,18 +32,19 @@ const Wrapper = styled.div`
     showMap ? 'minmax(620px, 1fr) 1fr' : 'auto'};
 `
 
-const ApartmentsView = ({ showMap }) => {
-  const { loading, data } = useQuery(APARTMENTS_QUERY)
-  const apartmentList = loading ? [] : data.apartments
-
+const ApartmentsView = ({ showMap, filters }) => {
+  const { loading, data } = useQuery(APARTMENTS_QUERY, {
+    variables: { filters },
+  })
+  const apartments = (data && data.apartments) || []
   return (
     <Wrapper showMap={showMap}>
       <ApartmentList
-        apartments={apartmentList}
+        apartments={apartments}
         showMap={showMap}
         loading={loading}
       />
-      <Map apartments={apartmentList} showMap={showMap} />
+      <Map apartments={apartments} showMap={showMap} />
     </Wrapper>
   )
 }

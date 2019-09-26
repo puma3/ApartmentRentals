@@ -1,7 +1,6 @@
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { ApolloLink } from 'apollo-link'
-import { setContext } from 'apollo-link-context'
 import { onError } from 'apollo-link-error'
 import {
   InMemoryCache,
@@ -17,23 +16,6 @@ const fragmentMatcher = new IntrospectionFragmentMatcher({
 const cache = new InMemoryCache({
   fragmentMatcher,
   dataIdFromObject: object => object.id || null,
-})
-
-const authLink = setContext((_, { headers }) => {
-  // get the authentication token from local storage if it exists
-  const token = localStorage.getItem('token')
-  // return the headers to the context so httpLink can read them
-  return {
-    // headers: {
-    //   ...headers,
-    //   authorization: token ? `Bearer ${token}` : '',
-    // },
-    headers: {
-      ...headers,
-      authorization: 'Atoken',
-      custom: 'Some text',
-    },
-  }
 })
 
 export const client = new ApolloClient({

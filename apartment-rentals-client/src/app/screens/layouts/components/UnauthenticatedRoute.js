@@ -1,5 +1,6 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
+import { CurrentUserConsumer } from '../../../shared/CurrentUserContext'
 
 const UnauthenticatedRoute = ({
   component: Component,
@@ -7,16 +8,20 @@ const UnauthenticatedRoute = ({
   ...rest
 }) => {
   return (
-    <Route
-      {...rest}
-      render={props => {
-        if (localStorage.getItem('X-User-Token') && !noRedirect) {
-          return <Redirect to="/" />
-        } else {
-          return <Component {...props} />
-        }
-      }}
-    />
+    <CurrentUserConsumer>
+      {({ currentUser }) => (
+        <Route
+          {...rest}
+          render={props => {
+            if (currentUser && !noRedirect) {
+              return <Redirect to="/" />
+            } else {
+              return <Component {...props} />
+            }
+          }}
+        />
+      )}
+    </CurrentUserConsumer>
   )
 }
 

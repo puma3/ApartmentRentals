@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext } from 'react'
 import { CURRENT_USER_QUERY } from '../screens/shared/graphql/queries'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -8,8 +8,6 @@ const CurrentUserContext = createContext({
 
 export const CurrentUserProvider = ({ children }) => {
   const { data, loading } = useQuery(CURRENT_USER_QUERY)
-  console.log('CURRENT_USER_QUERY', data)
-  console.log(data)
 
   return (
     <CurrentUserContext.Provider

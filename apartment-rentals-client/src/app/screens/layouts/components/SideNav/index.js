@@ -13,6 +13,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import PeopleIcon from '@material-ui/icons/People'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import SideNavLink from './components/SideNavLink'
+import AuthorizedView from '../../AuthorizedView'
 
 const sideNavWidth = 240
 
@@ -79,12 +80,18 @@ const SideNav = () => {
             linkText="Apartments"
             icon={ApartmentIcon}
           />
-          <SideNavLink
-            to="/app/realtors"
-            linkText="Realtors"
-            icon={AssignmentIndIcon}
-          />
-          <SideNavLink to="/app/clients" linkText="Clients" icon={PeopleIcon} />
+          <AuthorizedView allowedRoles={['ADMIN']}>
+            <SideNavLink
+              to="/app/realtors"
+              linkText="Realtors"
+              icon={AssignmentIndIcon}
+            />
+            <SideNavLink
+              to="/app/clients"
+              linkText="Clients"
+              icon={PeopleIcon}
+            />
+          </AuthorizedView>
         </div>
         <div>
           <Divider />

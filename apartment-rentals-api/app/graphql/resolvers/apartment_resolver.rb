@@ -6,9 +6,9 @@ module Resolvers::ApartmentResolver
 
     def resolve
       condition = {}
-      condition[:available] = true
+      condition[:available] = true if context[:current_user] == 'client'
 
-      Apartment.where(condition)
+      Apartment.where(condition).order(:id)
     end
   end
 end

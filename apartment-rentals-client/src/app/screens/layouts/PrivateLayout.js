@@ -9,6 +9,7 @@ import SideNav from './components/SideNav'
 import Apartments from '../Apartments'
 import Realtors from '../Realtors'
 import Clients from '../Clients'
+import AuthorizedView from './AuthorizedView'
 
 const BodyContainer = styled.div`
   display: flex;
@@ -28,8 +29,10 @@ const PrivateLayout = ({ match }) => (
             <SideNav />
             <Switch>
               <Route path={`${match.path}/apartments`} component={Apartments} />
-              <Route path={`${match.path}/realtors`} component={Realtors} />
-              <Route path={`${match.path}/clients`} component={Clients} />
+              <AuthorizedView allowedRoles={['ADMIN']}>
+                <Route path={`${match.path}/realtors`} component={Realtors} />
+                <Route path={`${match.path}/clients`} component={Clients} />
+              </AuthorizedView>
             </Switch>
           </BodyContainer>
         </React.Fragment>

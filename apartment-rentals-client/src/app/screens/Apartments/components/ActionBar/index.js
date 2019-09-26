@@ -1,11 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { SIZES, COLORS } from '../../../shared/general/constants'
+import { SIZES, COLORS } from '../../../../shared/general/constants'
 
-import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
+import { FilterOptionWrapper } from './components/common'
+import SizeFilter from './components/SizeFilter'
+import PriceFilter from './components/PriceFilter'
+import RoomsFilter from './components/RoomsFilter'
 
 const Row = styled.div`
   display: flex;
@@ -22,13 +25,14 @@ const FilterOptionsContainer = styled.div`
   align-items: center;
 `
 
-const FilterOptionWrapper = styled.div`
-  margin-right: ${SIZES['small']};
-`
-
-const FilterButton = styled(Button)`
-  font-size: ${SIZES['small']};
-`
+export const emptyFilters = {
+  size: { minSize: null, maxSize: null },
+  price: {
+    minPrice: null,
+    maxPrice: null,
+  },
+  numberOfRooms: null,
+}
 
 const ActionBar = ({ showMap, setShowMap }) => {
   return (
@@ -39,21 +43,9 @@ const ActionBar = ({ showMap, setShowMap }) => {
             Filters:
           </Typography>
         </FilterOptionWrapper>
-        <FilterOptionWrapper>
-          <FilterButton variant="outlined" color="primary">
-            Size
-          </FilterButton>
-        </FilterOptionWrapper>
-        <FilterOptionWrapper>
-          <FilterButton variant="outlined" color="primary">
-            Price
-          </FilterButton>
-        </FilterOptionWrapper>
-        <FilterOptionWrapper>
-          <FilterButton variant="outlined" color="primary">
-            Number of Rooms
-          </FilterButton>
-        </FilterOptionWrapper>
+        <SizeFilter />
+        <PriceFilter />
+        <RoomsFilter />
       </FilterOptionsContainer>
       <FormControlLabel
         control={
