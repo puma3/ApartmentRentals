@@ -5,6 +5,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { SIZES } from '../../shared/general/constants'
 import { CURRENT_USER_QUERY } from '../shared/graphql/queries'
 import { SIGN_IN_USER_MUTATION } from '../shared/graphql/mutations'
+import currentUserUtils from '../../shared/utils/currentUser'
 
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -34,7 +35,7 @@ const FormWrapper = styled.div`
   margin: 100px ${SIZES['ultra']} auto ${SIZES['ultra']};
 `
 
-const LoginForm = ({ onError }) => {
+const LoginForm = ({ onError, history }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [signInUserMutation, { client }] = useMutation(SIGN_IN_USER_MUTATION)
@@ -55,11 +56,14 @@ const LoginForm = ({ onError }) => {
       })
 
       setPassword('')
+      currentUserUtils.setHeaders(user)
 
       client.writeQuery({
         query: CURRENT_USER_QUERY,
         data: { currentUser: user },
       })
+
+      history.push('/')
 
       console.log('user', user)
     } catch ({ graphQLErrors }) {
@@ -185,7 +189,7 @@ const SignUpForm = () => (
   </React.Fragment>
 )
 
-const Login = props => {
+const Login = ({ history, ...props }) => {
   const [showLoginForm, setShowLoginForm] = useState(true)
   const [error, setError] = useState(null)
 
@@ -201,7 +205,7 @@ const Login = props => {
           <LockOutlinedIcon />
         </Avatar>
         {showLoginForm ? (
-          <LoginForm onError={setError} />
+          <LoginForm onError={setError} history={history} />
         ) : (
           <SignUpForm onError={setError} />
         )}

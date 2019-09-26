@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class GraphqlController < ApplicationController
-  # acts_as_token_authentication_handler_for User, fallback: :none
+  acts_as_token_authentication_handler_for User, fallback: :none
 
   def execute
     variables = ensure_hash(params[:variables])

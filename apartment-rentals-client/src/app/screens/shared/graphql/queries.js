@@ -3,12 +3,10 @@ import gql from 'graphql-tag'
 export const CURRENT_USER_QUERY = gql`
   query CurrentUser {
     currentUser {
-      user {
-        firstName
-        lastName
-        email
-        role
-      }
+      firstName
+      lastName
+      email
+      role
     }
   }
 `

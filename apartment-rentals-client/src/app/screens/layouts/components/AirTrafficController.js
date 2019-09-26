@@ -8,18 +8,19 @@ const AirTrafficController = ({ match }) => {
 
   return (
     <CurrentUserConsumer>
-      {({ currentUser }) => {
+      {({ currentUser, loading }) => {
         console.log('currentUser', currentUser)
+        console.log('redirect?', !currentUser && !loading)
 
         return (
           <Route
             exact
             path="/"
             render={() =>
-              currentUser ? (
-                <Redirect to="/app/apartments" />
-              ) : (
+              !currentUser && !loading ? (
                 <Redirect to="/login" />
+              ) : (
+                <Redirect to="/app/apartments" />
               )
             }
           />

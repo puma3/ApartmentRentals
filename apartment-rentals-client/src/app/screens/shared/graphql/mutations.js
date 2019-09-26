@@ -8,6 +8,7 @@ export const SIGN_IN_USER_MUTATION = gql`
         lastName
         email
         role
+        authenticationToken
       }
     }
   }

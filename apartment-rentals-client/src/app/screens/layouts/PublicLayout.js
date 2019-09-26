@@ -1,4 +1,7 @@
 import React from 'react'
+import { Route } from 'react-router-dom'
+
+import currentUserUtils from '../../shared/utils/currentUser'
 
 import Login from '../Login'
 import PrivateLayout from './PrivateLayout'
@@ -12,6 +15,15 @@ const PublicLayout = props => {
       <UnauthenticatedRoute path="/login" component={Login} />
       <AuthenticatedRoute path="/app" component={PrivateLayout} />
       <AirTrafficController />
+      <Route
+        path="*/logout"
+        render={({ history }) => {
+          currentUserUtils.removeHeaders()
+          window.location.replace('/login')
+
+          return null
+        }}
+      />
     </React.Fragment>
   )
 }

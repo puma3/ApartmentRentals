@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { SIZES, COLORS } from '../../../shared/general/constants'
 
+import Button from '@material-ui/core/Button'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
@@ -25,7 +26,9 @@ const FilterOptionWrapper = styled.div`
   margin-right: ${SIZES['small']};
 `
 
-const FilterButton = styled.button``
+const FilterButton = styled(Button)`
+  font-size: ${SIZES['small']};
+`
 
 const ActionBar = ({ showMap, setShowMap }) => {
   return (
@@ -37,13 +40,19 @@ const ActionBar = ({ showMap, setShowMap }) => {
           </Typography>
         </FilterOptionWrapper>
         <FilterOptionWrapper>
-          <FilterButton>Size</FilterButton>
+          <FilterButton variant="outlined" color="primary">
+            Size
+          </FilterButton>
         </FilterOptionWrapper>
         <FilterOptionWrapper>
-          <FilterButton>Price</FilterButton>
+          <FilterButton variant="outlined" color="primary">
+            Price
+          </FilterButton>
         </FilterOptionWrapper>
         <FilterOptionWrapper>
-          <FilterButton>Number of Rooms</FilterButton>
+          <FilterButton variant="outlined" color="primary">
+            Number of Rooms
+          </FilterButton>
         </FilterOptionWrapper>
       </FilterOptionsContainer>
       <FormControlLabel
