@@ -10,5 +10,8 @@ module Types
     end
 
     field :signInUser, mutation: Mutations::UserMutations::SignInUser
+    field :registerUser, mutation: Mutations::UserMutations::RegisterUser
+    field :updateUser, mutation: Mutations::UserMutations::UpdateUser
+    field :deleteUser, mutation: Mutations::UserMutations::DeleteUser
   end
 end

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 
-import CURRENT_USER_QUERY from '../../shared/graphql/queries/currentUser.graphql'
 import { SIZES } from '../../shared/general/constants'
+import { CURRENT_USER_QUERY } from '../shared/graphql/queries'
+import { SIGN_IN_USER_MUTATION } from '../shared/graphql/mutations'
 
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
@@ -13,18 +13,6 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import { Snackbar } from '@material-ui/core'
-
-const SIGN_IN_USER_MUTATION = gql`
-  mutation SignInUser($input: SignInUserInput!) {
-    signInUser(input: $input) {
-      user {
-        firstName
-        lastName
-        email
-      }
-    }
-  }
-`
 
 const LoginLayout = styled.div`
   display: grid;
@@ -198,7 +186,6 @@ const SignUpForm = () => (
 )
 
 const Login = props => {
-  console.log('props', props)
   const [showLoginForm, setShowLoginForm] = useState(true)
   const [error, setError] = useState(null)
 

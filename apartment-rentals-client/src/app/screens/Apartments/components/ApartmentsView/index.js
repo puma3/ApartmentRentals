@@ -33,7 +33,7 @@ const Wrapper = styled.div`
 `
 
 const ApartmentsView = ({ showMap }) => {
-  const { loading, error, data } = useQuery(APARTMENTS_QUERY)
+  const { loading, data } = useQuery(APARTMENTS_QUERY)
   const apartmentList = loading ? [] : data.apartments
 
   return (

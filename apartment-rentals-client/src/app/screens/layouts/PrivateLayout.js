@@ -1,10 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
+
+import { CurrentUserConsumer } from '../../shared/CurrentUserContext'
 
 import Header from './components/Header'
 import SideNav from './components/SideNav'
 import Apartments from '../Apartments'
+import Realtors from '../Realtors'
+import Clients from '../Clients'
 
 const BodyContainer = styled.div`
   display: flex;
@@ -12,20 +16,26 @@ const BodyContainer = styled.div`
   height: 100%;
 `
 
-const PrivateLayout = ({ match }) => {
-  return (
-    <React.Fragment>
-      <Header />
-      <BodyContainer>
-        <SideNav />
-        <Switch>
-          <Route path={`${match.path}/apartments`} component={Apartments} />
-          <Route path={`${match.path}/realtors`} component={Apartments} />
-          <Route path={`${match.path}/clients`} component={Apartments} />
-        </Switch>
-      </BodyContainer>
-    </React.Fragment>
-  )
-}
+const PrivateLayout = ({ match }) => (
+  <CurrentUserConsumer>
+    {({ currentUser }) =>
+      !currentUser ? (
+        <Redirect to="/login" />
+      ) : (
+        <React.Fragment>
+          <Header />
+          <BodyContainer>
+            <SideNav />
+            <Switch>
+              <Route path={`${match.path}/apartments`} component={Apartments} />
+              <Route path={`${match.path}/realtors`} component={Realtors} />
+              <Route path={`${match.path}/clients`} component={Clients} />
+            </Switch>
+          </BodyContainer>
+        </React.Fragment>
+      )
+    }
+  </CurrentUserConsumer>
+)
 
 export default PrivateLayout

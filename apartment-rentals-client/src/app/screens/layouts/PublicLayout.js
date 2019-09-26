@@ -10,8 +10,8 @@ const PublicLayout = props => {
   return (
     <React.Fragment>
       <UnauthenticatedRoute path="/login" component={Login} />
-      <AirTrafficController />
       <AuthenticatedRoute path="/app" component={PrivateLayout} />
+      <AirTrafficController />
     </React.Fragment>
   )
 }

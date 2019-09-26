@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import ActionBar from './components/ActionBar'
 import { MainViewLayout } from '../shared/Layout'
 import ApartmentsView from './components/ApartmentsView'

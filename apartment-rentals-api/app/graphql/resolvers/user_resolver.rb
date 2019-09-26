@@ -8,4 +8,15 @@ module Resolvers::UserResolver
       context[:current_user]
     end
   end
+
+  class UserList < Resolvers::Base
+    type [Types::ModelTypes::UserType], null: true
+
+    argument :role, Types::EnumTypes::UserRole, required: false
+
+    def resolve(role: 'client')
+      # TODO: Do some authorization
+      User.where(role: role)
+    end
+  end
 end

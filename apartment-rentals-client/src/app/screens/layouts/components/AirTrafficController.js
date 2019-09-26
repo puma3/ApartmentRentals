@@ -1,23 +1,32 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import React from 'react'
+import { Route, Redirect } from 'react-router-dom'
+
+import { CurrentUserConsumer } from '../../../shared/CurrentUserContext'
 
 const AirTrafficController = ({ match }) => {
-  console.log("match@AirTrafficController", match);
-  const currentUser = true;
+  console.log('match@AirTrafficController', match)
 
   return (
-    <Route
-      exact
-      path="/"
-      render={() =>
-        currentUser ? (
-          <Redirect to="/app/apartments" />
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    />
-  );
-};
+    <CurrentUserConsumer>
+      {({ currentUser }) => {
+        console.log('currentUser', currentUser)
 
-export default AirTrafficController;
+        return (
+          <Route
+            exact
+            path="/"
+            render={() =>
+              currentUser ? (
+                <Redirect to="/app/apartments" />
+              ) : (
+                <Redirect to="/login" />
+              )
+            }
+          />
+        )
+      }}
+    </CurrentUserConsumer>
+  )
+}
+
+export default AirTrafficController

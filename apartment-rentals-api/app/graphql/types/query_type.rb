@@ -16,5 +16,7 @@ module Types
                          description: 'Fetches current user'
     field :apartments, resolver: Resolvers::ApartmentResolver::ApartmentList,
                        description: 'Fetches available or all apartments depending on user role'
+    field :users, resolver: Resolvers::UserResolver::UserList,
+                  description: 'Fetches the complete list of users that have a specific role'
   end
 end

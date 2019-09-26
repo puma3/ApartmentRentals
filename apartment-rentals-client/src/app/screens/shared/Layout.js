@@ -1,5 +1,5 @@
-import React from "react";
-import styled, { createGlobalStyle } from "styled-components";
+import React from 'react'
+import styled, { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -21,32 +21,16 @@ const GlobalStyle = createGlobalStyle`
     font-family:'Fira Sans', sans-serif !important;
     overflow: hidden;
   }
-`;
+`
 
 export const AppLayout = ({ children }) => (
   <React.Fragment>
     <GlobalStyle />
     {children}
   </React.Fragment>
-);
+)
 
-export const MainViewLayout = ({ children }) => (
-  <div style={{ width: "100%", height: "100%" }}>{children}</div>
-);
-
-// const StyledUnauthedLayout = styled.div`
-//   height: 100%;
-//   display: grid;
-//   grid-template-rows: 1fr auto;
-//   overflow-y: auto;
-// `;
-
-// export const UnauthLayout = ({ children }) => (
-//   <StyledUnauthedLayout>
-//     <div
-//       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-//     >
-//       {children}
-//     </div>
-//   </StyledUnauthedLayout>
-// );
+export const MainViewLayout = styled.div`
+  width: 100%;
+  height: 100%;
+`
