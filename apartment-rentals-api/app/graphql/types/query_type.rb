@@ -12,6 +12,9 @@ module Types
     #   'Hello World!'
     # end
 
-    field :current_user, resolver: Resolvers::UserResolver::CurrentUser, description: 'Fetches current user'
+    field :current_user, resolver: Resolvers::UserResolver::CurrentUser,
+                         description: 'Fetches current user'
+    field :apartments, resolver: Resolvers::ApartmentResolver::ApartmentList,
+                       description: 'Fetches available or all apartments depending on user role'
   end
 end

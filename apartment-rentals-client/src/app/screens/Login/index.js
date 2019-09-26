@@ -14,7 +14,7 @@ import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import { Snackbar } from '@material-ui/core'
 
-const SIGN_IN_USER = gql`
+const SIGN_IN_USER_MUTATION = gql`
   mutation SignInUser($input: SignInUserInput!) {
     signInUser(input: $input) {
       user {
@@ -49,7 +49,7 @@ const FormWrapper = styled.div`
 const LoginForm = ({ onError }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [signInUserMutation, { client }] = useMutation(SIGN_IN_USER)
+  const [signInUserMutation, { client }] = useMutation(SIGN_IN_USER_MUTATION)
 
   const signInUser = async () => {
     try {

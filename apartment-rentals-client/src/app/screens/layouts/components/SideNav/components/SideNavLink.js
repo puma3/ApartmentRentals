@@ -28,7 +28,7 @@ const SideNavLinkWrapper = styled(NavLink).attrs(() => ({
   }
   &:hover,
   &:active {
-    color: ${COLORS['blue']};
+    color: ${({ color }) => (color ? COLORS[color] : COLORS['blue'])};
   }
 `
 
@@ -37,12 +37,12 @@ const NavText = styled.div`
   padding: 0 ${SIZES['large']};
 `
 
-const SideNavLink = ({ location, to, linkText, icon }) => {
+const SideNavLink = ({ location, to, linkText, icon, color }) => {
   const isActive = path => location.pathname.includes(to)
   const NavIcon = icon
 
   return (
-    <SideNavLinkWrapper to={to} isActive={isActive}>
+    <SideNavLinkWrapper to={to} isActive={isActive} color={color}>
       <NavIcon />
       <NavText>{linkText}</NavText>
     </SideNavLinkWrapper>

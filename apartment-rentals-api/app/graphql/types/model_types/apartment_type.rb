@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Types
+module Types::ModelTypes
   class ApartmentType < Types::BaseObject
     field :name, String, null: true
     field :description, String, null: true
@@ -10,6 +10,6 @@ module Types
     field :latitude, Float, null: true
     field :longitude, Float, null: true
     field :available, Boolean, null: true
-    field :realtor, Types::UserType, null: true
+    field :realtor, Types::ModelTypes::UserType, null: true
   end
 end
