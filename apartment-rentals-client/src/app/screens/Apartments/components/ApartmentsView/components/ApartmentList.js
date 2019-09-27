@@ -184,6 +184,9 @@ const HorizontalEntry = ({
                   apartment.numberOfRooms === 1 ? 'Room' : 'Rooms'
                 }`}
               </Typography>
+              <Typography variant="caption" color="textSecondary" component="p">
+                {apartment.address}
+              </Typography>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <Typography variant="body1" color="textSecondary" component="p">

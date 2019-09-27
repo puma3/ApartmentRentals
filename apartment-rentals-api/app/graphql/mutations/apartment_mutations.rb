@@ -7,7 +7,7 @@ module Mutations::ApartmentMutations
     argument :price_per_month, Float, required: true
     argument :floor_area_size, Float, required: true
     argument :number_of_rooms, Int, required: true
-    argument :address, String, required: true
+    argument :address, String, required: false
     argument :latitude, Float, required: true
     argument :longitude, Float, required: true
     argument :realtor_email, String, required: true

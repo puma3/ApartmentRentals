@@ -38,38 +38,9 @@ const MapMarker = styled.div`
 const K_HOVER_DISTANCE = 30
 
 const PriceMarker = ({ apartment, $hover, ...props }) => {
-  // const [anchorEl, setAnchorEl] = useState(null)
-
-  // const handleClick = event => {
-  //   setAnchorEl(event.currentTarget)
-  // }
-
-  // const handleClose = () => {
-  //   setAnchorEl(null)
-  // }
-
   return (
-    <div>
-      {/* {!anchorEl ? ( */}
+    <div style={{ position: 'relative', right: '16px', bottom: '28px' }}>
       <MapMarker>$ {apartment.pricePerMonth}</MapMarker>
-      {/* ) : (
-        <Popover
-          id={`${apartment.id}-popover`}
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'left',
-          }}
-        >
-          <MapMarker>$ {apartment.pricePerMonth}</MapMarker>
-        </Popover>
-      )} */}
     </div>
   )
 }

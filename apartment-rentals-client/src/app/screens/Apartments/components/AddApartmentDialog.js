@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import styled from 'styled-components'
 import Geocode from 'react-geocode'
@@ -12,11 +12,19 @@ import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
-import { TextField, InputAdornment, Icon } from '@material-ui/core'
+import {
+  TextField,
+  InputAdornment,
+  Icon,
+  Select,
+  MenuItem,
+  InputLabel,
+} from '@material-ui/core'
 import { SIZES } from '../../../shared/general/constants'
 import RoomIcon from '@material-ui/icons/Room'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation, useQuery } from '@apollo/react-hooks'
 import { CREATE_APARTMENT_MUTATION } from '../../shared/graphql/mutations'
+import { USER_LIST_QUERY } from '../../shared/graphql/queries'
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g'
 
@@ -89,6 +97,12 @@ const AddApartmentDialog = ({ open, handleClose }) => {
     refetchQueries: ['ApartmentList'],
   })
 
+  const { loading, data: realtorsData } = useQuery(USER_LIST_QUERY, {
+    variables: {
+      role: 'REALTOR',
+    },
+  })
+
   const [name, setName] = useState(null)
   const [description, setDescription] = useState(null)
   const [size, setSize] = useState(0)
@@ -97,6 +111,7 @@ const AddApartmentDialog = ({ open, handleClose }) => {
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
   const [address, setAddress] = useState('')
+  const [realtorEmail, setRealtorEmail] = useState('')
 
   const onMapClick = ({ lat, lng }) => {
     setLatitude(Math.round(lat * 100000000) / 100000000)
@@ -131,7 +146,7 @@ const AddApartmentDialog = ({ open, handleClose }) => {
           address,
           latitude,
           longitude,
-          realtorEmail: 'han@rebel.com',
+          realtorEmail,
         },
       },
       refetchQueries: ['ApartmentList'],
@@ -232,7 +247,6 @@ const AddApartmentDialog = ({ open, handleClose }) => {
               onChange={e => updateAddress(e.target.value)}
               value={address}
               fullWidth
-              required
               InputLabelProps={{ shrink: true }}
             />
             <div
@@ -240,6 +254,7 @@ const AddApartmentDialog = ({ open, handleClose }) => {
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
                 gridGap: SIZES['medium'],
+                marginBottom: SIZES['small'],
               }}
             >
               <TextField
@@ -263,6 +278,30 @@ const AddApartmentDialog = ({ open, handleClose }) => {
                 onChange={e => setLongitude(e.target.value)}
               />
             </div>
+            <InputLabel shrink htmlFor="realtor-label-placeholder">
+              Associated Realtor
+            </InputLabel>
+            <Select
+              label="Realtor"
+              value={realtorEmail}
+              fullWidth
+              required
+              onChange={e => setRealtorEmail(e.target.value)}
+              inputProps={{
+                name: 'realtor',
+                id: 'realtor-label-placeholder',
+              }}
+            >
+              {loading ? (
+                <MenuItem value="">No Realtor Users</MenuItem>
+              ) : (
+                realtorsData.users.map(realtor => (
+                  <MenuItem value={realtor.email}>
+                    {realtor.firstName} {realtor.lastName}
+                  </MenuItem>
+                ))
+              )}
+            </Select>
           </form>
           <GoogleMapReact
             bootstrapURLKeys={{
