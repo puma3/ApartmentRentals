@@ -12,7 +12,6 @@ import AddApartmentDialog from './components/AddApartmentDialog'
 const useStyles = makeStyles(theme => ({
   fab: {
     position: 'absolute',
-    right: '60px',
     bottom: '20px',
   },
 }))
@@ -47,6 +46,7 @@ const Apartments = ({ match }) => {
           aria-label="add"
           className={classes.fab}
           onClick={handleClickOpen}
+          style={{ right: showMap ? '60px' : '20px' }}
         >
           <AddIcon />
         </Fab>
