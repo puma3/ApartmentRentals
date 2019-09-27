@@ -122,7 +122,7 @@ const AddApartmentDialog = ({ open, handleClose, apartment }) => {
   )
   const [address, setAddress] = useState(apartment ? apartment.address : '')
   const [realtorEmail, setRealtorEmail] = useState(
-    apartment ? apartment.realtor.email : '',
+    apartment ? apartment.realtor.email : null,
   )
 
   useEffect(() => {

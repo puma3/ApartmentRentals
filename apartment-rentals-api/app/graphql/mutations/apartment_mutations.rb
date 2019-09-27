@@ -46,7 +46,7 @@ module Mutations::ApartmentMutations
     argument :longitude, Float, required: false
     argument :longitude, Float, required: false
     argument :available, Boolean, required: false
-    argument :realtor_email, String, required: true
+    argument :realtor_email, String, required: false
 
     field :apartment, Types::ModelTypes::ApartmentType, null: true
     description 'Updates an Apartment'
