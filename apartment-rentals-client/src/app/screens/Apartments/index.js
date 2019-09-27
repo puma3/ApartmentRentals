@@ -12,7 +12,7 @@ import AddApartmentDialog from './components/AddApartmentDialog'
 const useStyles = makeStyles(theme => ({
   fab: {
     position: 'absolute',
-    right: '20px',
+    right: '60px',
     bottom: '20px',
   },
 }))
