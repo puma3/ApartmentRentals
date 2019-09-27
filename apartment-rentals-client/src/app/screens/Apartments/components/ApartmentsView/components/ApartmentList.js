@@ -5,11 +5,26 @@ import styled from 'styled-components'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
-import { GridList } from '@material-ui/core'
+import {
+  GridList,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+} from '@material-ui/core'
 import { SIZES } from '../../../../../shared/general/constants'
 import AuthorizedView from '../../../../layouts/AuthorizedView'
+import {
+  UPDATE_APARTMENT_MUTATION,
+  DELETE_APARTMENT_MUTATION,
+} from '../../../../shared/graphql/mutations'
+import { useMutation } from '@apollo/react-hooks'
 
 const horizontalStyles = makeStyles(theme => ({
   card: {
@@ -28,77 +43,172 @@ const ApartmentInfoContainer = styled.div`
   padding: ${SIZES['small']} ${SIZES['large']};
 `
 
-const HorizontalEntry = ({ apartment, apartment: { realtor } }) => {
+const ApartmentMenu = ({ apartment }) => {
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+  const [updateApartmentMutation] = useMutation(UPDATE_APARTMENT_MUTATION)
+  const [deleteApartmentMutation] = useMutation(DELETE_APARTMENT_MUTATION)
+
+  const available = apartment && apartment.available
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleDialogClose = () => {
+    setDeleteDialogOpen(false)
+  }
+
+  const handleDialogConfirmation = () => {
+    deleteApartmentMutation({
+      variables: {
+        input: { id: apartment.id },
+      },
+      refetchQueries: ['ApartmentList'],
+    })
+    handleDialogClose()
+  }
+
+  const toggleAvailability = () => {
+    updateApartmentMutation({
+      variables: {
+        input: { id: apartment.id, available: !available },
+      },
+    })
+    handleClose()
+  }
+
+  return (
+    <React.Fragment>
+      <IconButton size="small" onClick={handleClick}>
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            setDeleteDialogOpen(true)
+          }}
+        >
+          Delete
+        </MenuItem>
+        <MenuItem onClick={toggleAvailability}>
+          Make {available ? 'Unavailable' : 'Available'}
+        </MenuItem>
+      </Menu>
+      <Dialog open={deleteDialogOpen} onClose={handleDialogClose}>
+        <DialogTitle>Delete Apartment?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You won't be able to undo this action.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleDialogConfirmation} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+  )
+}
+
+const HorizontalEntry = ({
+  apartment,
+  apartment: { realtor },
+  setDefaultLatLng,
+}) => {
   const classes = horizontalStyles()
 
   return (
-    <Card className={classes.card}>
-      <CardMedia
-        className={classes.media}
-        image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
-        title="Ted talk"
-      />
-      <ApartmentInfoContainer>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h6" color="textPrimary" component="p">
-            {apartment.name}
-          </Typography>
-          <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
-            <IconButton size="small">
-              <MoreVertIcon />
-            </IconButton>
-          </AuthorizedView>
-        </div>
+    <div
+      onClick={() => {
+        setDefaultLatLng({
+          lat: apartment.latitude,
+          lng: apartment.longitude,
+        })
+      }}
+    >
+      <Card className={classes.card}>
+        <CardMedia
+          className={classes.media}
+          image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
+          title="Ted talk"
+        />
+        <ApartmentInfoContainer>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Typography variant="h6" color="textPrimary" component="p">
+              {apartment.name}
+            </Typography>
+            <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
+              <ApartmentMenu apartment={apartment} />
+            </AuthorizedView>
+          </div>
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            height: '80%',
-          }}
-        >
-          <div>
-            <Typography variant="body1" color="textSecondary" component="p">
-              {apartment.description}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              {`$ ${apartment.pricePerMonth} \u2022 ${
-                apartment.floorAreaSize
-              } sqft \u2022 ${apartment.numberOfRooms} ${
-                apartment.numberOfRooms === 1 ? 'Room' : 'Rooms'
-              }`}
-            </Typography>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body1" color="textSecondary" component="p">
-              Realtor: {realtor.firstName} {realtor.lastName}
-            </Typography>
-            {apartment.available ? (
-              <Typography variant="body1" color="primary" component="p">
-                Available
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '80%',
+            }}
+          >
+            <div>
+              <Typography variant="body1" color="textSecondary" component="p">
+                {apartment.description}
               </Typography>
-            ) : (
-              <Typography variant="body1" color="secondary" component="p">
-                Unavailable
+              <Typography variant="body2" color="textSecondary" component="p">
+                {`$ ${apartment.pricePerMonth} \u2022 ${
+                  apartment.floorAreaSize
+                } sqft \u2022 ${apartment.numberOfRooms} ${
+                  apartment.numberOfRooms === 1 ? 'Room' : 'Rooms'
+                }`}
               </Typography>
-            )}
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Typography variant="body1" color="textSecondary" component="p">
+                Realtor: {realtor.firstName} {realtor.lastName}
+              </Typography>
+              {apartment.available ? (
+                <Typography variant="body1" color="primary" component="p">
+                  Available
+                </Typography>
+              ) : (
+                <Typography variant="body1" color="secondary" component="p">
+                  Unavailable
+                </Typography>
+              )}
+            </div>
           </div>
-        </div>
-      </ApartmentInfoContainer>
-    </Card>
+        </ApartmentInfoContainer>
+      </Card>
+    </div>
   )
 }
 
 const verticalStyles = makeStyles(theme => ({
   card: {
-    maxWidth: 345,
+    width: 345,
     margin: theme.spacing(2),
   },
   media: {
@@ -129,9 +239,7 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
             {apartment.name}
           </Typography>
           <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
-            <IconButton size="small">
-              <MoreVertIcon />
-            </IconButton>
+            <ApartmentMenu />
           </AuthorizedView>
         </div>
         <Typography variant="body1" color="textSecondary" component="p">
@@ -152,7 +260,7 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
           }}
         >
           <Typography variant="body1" color="textSecondary" component="p">
-            Realtor: {realtor.firstName} {realtor.lastName}
+            {realtor.firstName} {realtor.lastName}
           </Typography>
           {apartment.available ? (
             <Typography variant="body1" color="primary" component="p">
@@ -169,19 +277,25 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
   )
 }
 
-const ApartmentList = ({ apartments, showMap }) => {
+const ApartmentList = ({ apartments, showMap, setDefaultLatLng }) => {
   return showMap ? (
     // Return Horizontal entries
     <GridList>
       {apartments.map((apartment, idx) => (
-        <HorizontalEntry apartment={apartment} key={`hv${idx}`} />
+        <HorizontalEntry
+          apartment={apartment}
+          key={`hv${idx}`}
+          setDefaultLatLng={setDefaultLatLng}
+        />
       ))}
     </GridList>
   ) : (
     // Return Vertical entries
-    apartments.map((apartment, idx) => (
-      <VerticalEntry apartment={apartment} key={`vv${idx}`} />
-    ))
+    <GridList>
+      {apartments.map((apartment, idx) => (
+        <VerticalEntry apartment={apartment} key={`vv${idx}`} />
+      ))}
+    </GridList>
   )
 }
 

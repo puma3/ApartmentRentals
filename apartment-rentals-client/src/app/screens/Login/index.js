@@ -129,7 +129,7 @@ const SignUpForm = ({ backToLogin, onError }) => {
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [registerUserMutation, { client }] = useMutation(REGISTER_USER_MUTATION)
+  const [registerUserMutation] = useMutation(REGISTER_USER_MUTATION)
 
   const registerUser = async () => {
     try {

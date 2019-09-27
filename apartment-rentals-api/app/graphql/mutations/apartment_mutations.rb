@@ -19,7 +19,7 @@ module Mutations::ApartmentMutations
       return GraphQL::ExecutionError.new('You are not allowed to perform this') if context[:current_user].client?
 
       realtor = User.find_for_authentication(email: realtor_email)
-      return GraphQL::ExecutionError.new('An existing realtor email is required') unless user
+      return GraphQL::ExecutionError.new('An existing realtor email is required') unless realtor
 
       valid_inputs = { name: name, description: description, price_per_month: price_per_month, floor_area_size: floor_area_size,
                        number_of_rooms: number_of_rooms, address: address, latitude: latitude, longitude: longitude }
@@ -36,31 +36,28 @@ module Mutations::ApartmentMutations
 
   class UpdateApartment < Mutations::BaseMutation
     argument :id, ID, required: true
-    argument :name, String, required: true
-    argument :description, String, required: true
-    argument :price_per_month, Float, required: true
-    argument :floor_area_size, Float, required: true
-    argument :number_of_rooms, Int, required: true
-    argument :address, String, required: true
-    argument :latitude, Float, required: true
-    argument :longitude, Float, required: true
-    argument :realtor_email, String, required: true
+    argument :name, String, required: false
+    argument :description, String, required: false
+    argument :price_per_month, Float, required: false
+    argument :floor_area_size, Float, required: false
+    argument :number_of_rooms, Int, required: false
+    argument :address, String, required: false
+    argument :latitude, Float, required: false
+    argument :longitude, Float, required: false
+    argument :longitude, Float, required: false
+    argument :available, Boolean, required: false
 
     field :apartment, Types::ModelTypes::ApartmentType, null: true
     description 'Updates an Apartment'
 
-    def resolve(id:, name:, description:, price_per_month:, floor_area_size:, number_of_rooms:, address:, latitude:, longitude:, realtor_email:)
+    # def resolve(id:, name:, description:, price_per_month:, floor_area_size:, number_of_rooms:, address:, latitude:, longitude:, realtor_email:)
+    def resolve(arguments)
       return GraphQL::ExecutionError.new('You are not allowed to perform this') if context[:current_user].client?
 
-      realtor = User.find_for_authentication(email: realtor_email)
-      return GraphQL::ExecutionError.new('An existing realtor email is required') unless user
-
-      apartment = Apartment.find_by_id(id)
+      apartment = Apartment.find_by_id(arguments[:id])
       return GraphQL::ExecutionError.new('Please provide a correct apartment ID') unless apartment
 
-      valid_inputs = { name: name, description: description, price_per_month: price_per_month, floor_area_size: floor_area_size,
-                       number_of_rooms: number_of_rooms, address: address, latitude: latitude, longitude: longitude }
-      valid_inputs[:realtor] = realtor
+      valid_inputs = arguments.to_h.except(:id)
 
       apartment.assign_attributes(valid_inputs)
       if apartment.save

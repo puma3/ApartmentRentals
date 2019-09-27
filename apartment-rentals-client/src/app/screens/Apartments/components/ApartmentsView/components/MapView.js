@@ -74,12 +74,12 @@ const PriceMarker = ({ apartment, $hover, ...props }) => {
   )
 }
 
-const MapView = ({ showMap, apartments }) => {
+const MapView = ({ showMap, apartments, defaultLatLng: { lat, lng } }) => {
   return showMap ? (
     <MapContainer>
       <GoogleMapReact
         bootstrapURLKeys={{ key: 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g' }}
-        center={[-16.3937852, -71.5182117]}
+        center={[lat, lng]}
         zoom={17}
         hoverDistance={K_HOVER_DISTANCE}
       >

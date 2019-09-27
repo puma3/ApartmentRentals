@@ -47,3 +47,55 @@ export const DELETE_USER_MUTATION = gql`
     }
   }
 `
+
+export const CREATE_APARTMENT_MUTATION = gql`
+  mutation CreateApartment($input: CreateApartmentInput!) {
+    createApartment(input: $input) {
+      apartment {
+        id
+        address
+        available
+        description
+        floorAreaSize
+        latitude
+        longitude
+        name
+        numberOfRooms
+        pricePerMonth
+        realtor {
+          email
+          firstName
+          lastName
+          __typename
+        }
+      }
+    }
+  }
+`
+
+export const UPDATE_APARTMENT_MUTATION = gql`
+  mutation UpdateApartment($input: UpdateApartmentInput!) {
+    updateApartment(input: $input) {
+      apartment {
+        id
+        address
+        available
+        description
+        floorAreaSize
+        latitude
+        longitude
+        name
+        numberOfRooms
+        pricePerMonth
+      }
+    }
+  }
+`
+
+export const DELETE_APARTMENT_MUTATION = gql`
+  mutation DeleteApartment($input: DeleteApartmentInput!) {
+    deleteApartment(input: $input) {
+      success
+    }
+  }
+`

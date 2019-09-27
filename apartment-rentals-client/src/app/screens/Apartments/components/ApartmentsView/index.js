@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -13,6 +13,8 @@ const Wrapper = styled.div`
     showMap ? 'minmax(620px, 1fr) 1fr' : 'auto'};
 `
 
+const initialLatLng = { lat: -16.3937852, lng: -71.5182117 }
+
 const ApartmentsView = ({ showMap, filters }) => {
   const { loading, data, refetch } = useQuery(APARTMENTS_QUERY, {
     variables: {
@@ -25,14 +27,29 @@ const ApartmentsView = ({ showMap, filters }) => {
   }, [filters, refetch])
 
   const apartments = (data && data.apartments) || []
+
+  const [defaultLatLng, setDefaultLatLng] = useState(initialLatLng)
+
+  useEffect(() => {
+    const first = data && data.apartments[0]
+    setDefaultLatLng(
+      first ? { lat: first.latitude, lng: first.longitude } : initialLatLng,
+    )
+  }, [data])
+
   return (
     <Wrapper showMap={showMap}>
       <ApartmentList
         apartments={apartments}
         showMap={showMap}
         loading={loading}
+        setDefaultLatLng={setDefaultLatLng}
       />
-      <Map apartments={apartments} showMap={showMap} />
+      <Map
+        apartments={apartments}
+        showMap={showMap}
+        defaultLatLng={defaultLatLng}
+      />
     </Wrapper>
   )
 }
