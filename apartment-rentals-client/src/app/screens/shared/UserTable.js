@@ -13,7 +13,7 @@ import Table from './MaterialTable'
 const userTableColumns = [
   { title: 'First Name', field: 'firstName' },
   { title: 'Last Name', field: 'lastName' },
-  { title: 'Email Address', field: 'email' },
+  { title: 'Email Address', field: 'email', editable: 'onAdd' },
   {
     title: 'Role',
     field: 'role',

@@ -4,7 +4,10 @@ import { useMutation } from '@apollo/react-hooks'
 
 import { SIZES } from '../../shared/general/constants'
 import { CURRENT_USER_QUERY } from '../shared/graphql/queries'
-import { SIGN_IN_USER_MUTATION } from '../shared/graphql/mutations'
+import {
+  SIGN_IN_USER_MUTATION,
+  REGISTER_USER_MUTATION,
+} from '../shared/graphql/mutations'
 import currentUserUtils from '../../shared/utils/currentUser'
 
 import Avatar from '@material-ui/core/Avatar'
@@ -49,8 +52,8 @@ const LoginForm = ({ onError, history }) => {
       } = await signInUserMutation({
         variables: {
           input: {
-            email: email,
-            password: password,
+            email,
+            password,
           },
         },
       })
@@ -64,8 +67,6 @@ const LoginForm = ({ onError, history }) => {
       })
 
       history.push('/')
-
-      console.log('user', user)
     } catch ({ graphQLErrors }) {
       onError(graphQLErrors[0].message)
     }
@@ -123,71 +124,121 @@ const LoginForm = ({ onError, history }) => {
   )
 }
 
-const SignUpForm = () => (
-  <React.Fragment>
-    <Typography component="h1" variant="h5">
-      Sign up
-    </Typography>
-    <form noValidate>
-      <div
-        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gridGap: 16 }}
-      >
-        <TextField
-          autoComplete="fname"
-          margin="normal"
-          name="firstName"
-          variant="outlined"
-          required
-          fullWidth
-          id="firstName"
-          label="First Name"
-          autoFocus
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="lastName"
-          label="Last Name"
-          name="lastName"
-          autoComplete="lname"
-        />
-      </div>
-      <TextField
-        variant="outlined"
-        margin="normal"
-        required
-        fullWidth
-        id="email"
-        label="Email Address"
-        name="email"
-        autoComplete="email"
-      />
-      <TextField
-        variant="outlined"
-        margin="normal"
-        required
-        fullWidth
-        name="password"
-        label="Password"
-        type="password"
-        id="password"
-        autoComplete="current-password"
-      />
+const SignUpForm = ({ backToLogin, onError }) => {
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [registerUserMutation, { client }] = useMutation(REGISTER_USER_MUTATION)
 
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        color="primary"
-        style={{ marginTop: SIZES['medium'] }}
+  const registerUser = async () => {
+    try {
+      await registerUserMutation({
+        variables: {
+          input: {
+            firstName,
+            lastName,
+            email,
+            password,
+          },
+        },
+      })
+
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setPassword('')
+
+      backToLogin()
+      onError('You are registered now!')
+    } catch ({ graphQLErrors }) {
+      onError(graphQLErrors[0].message)
+    }
+  }
+
+  return (
+    <React.Fragment>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
+      <form
+        onSubmit={e => {
+          e.preventDefault()
+          registerUser()
+        }}
       >
-        Sign Up
-      </Button>
-    </form>
-  </React.Fragment>
-)
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gridGap: 16,
+          }}
+        >
+          <TextField
+            autoComplete="fname"
+            margin="normal"
+            name="firstName"
+            variant="outlined"
+            required
+            fullWidth
+            id="firstName"
+            label="First Name"
+            autoFocus
+            value={firstName}
+            onChange={e => setFirstName(e.target.value)}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="lastName"
+            label="Last Name"
+            name="lastName"
+            autoComplete="lname"
+            value={lastName}
+            onChange={e => setLastName(e.target.value)}
+          />
+        </div>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          style={{ marginTop: SIZES['medium'] }}
+        >
+          Sign Up
+        </Button>
+      </form>
+    </React.Fragment>
+  )
+}
 
 const Login = ({ history, ...props }) => {
   const [showLoginForm, setShowLoginForm] = useState(true)
@@ -207,7 +258,10 @@ const Login = ({ history, ...props }) => {
         {showLoginForm ? (
           <LoginForm onError={setError} history={history} />
         ) : (
-          <SignUpForm onError={setError} />
+          <SignUpForm
+            onError={setError}
+            backToLogin={() => setShowLoginForm(true)}
+          />
         )}
         <Link
           onClick={() => setShowLoginForm(!showLoginForm)}
@@ -217,10 +271,11 @@ const Login = ({ history, ...props }) => {
           {switchFormText}
         </Link>
         <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          variant="error"
           open={Boolean(error)}
           message={error}
           onClose={() => setError(null)}
-          variant="error"
         />
       </FormWrapper>
     </LoginLayout>

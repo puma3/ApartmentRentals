@@ -16,12 +16,20 @@ import TextField from '@material-ui/core/TextField'
 
 const SizeFilter = ({
   filters: {
-    size: { minSize, maxSize },
+    size: { minSize: minSizeFilterState, maxSize: maxSizeFilterState },
     ...rest
   },
+  minSize: propMinSize,
+  maxSize: propMaxSize,
   setFilters,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
+
+  const defaultMinSize = minSizeFilterState || propMinSize
+  const defaultMaxSize = maxSizeFilterState || propMaxSize
+
+  const [minSize, setMinSize] = useState(defaultMinSize)
+  const [maxSize, setMaxSize] = useState(defaultMaxSize)
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -31,17 +39,27 @@ const SizeFilter = ({
     setAnchorEl(null)
   }
 
+  const clearFilter = () => {
+    setFilters({ size: { minSize: null, maxSize: null }, ...rest })
+    handleClose()
+  }
+
+  const saveFilter = () => {
+    setFilters({ size: { minSize, maxSize }, ...rest })
+    handleClose()
+  }
+
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const isActive = minSize || maxSize
+  const isActive = minSizeFilterState || maxSizeFilterState
   let filterText = 'Size'
-  if (minSize && maxSize) {
-    filterText = `${minSize} SF - ${maxSize} SF`
-  } else if (minSize) {
-    filterText = `${minSize}+ SF`
-  } else if (maxSize) {
-    filterText = `Up to ${maxSize} SF`
+  if (minSizeFilterState && maxSizeFilterState) {
+    filterText = `${minSizeFilterState} SF - ${maxSizeFilterState} SF`
+  } else if (minSizeFilterState) {
+    filterText = `${minSizeFilterState}+ SF`
+  } else if (maxSizeFilterState) {
+    filterText = `Up to ${maxSizeFilterState} SF`
   }
 
   return (
@@ -71,10 +89,14 @@ const SizeFilter = ({
         <PopoverContent>
           <CustomSlider
             ThumbComponent={ThumbComponent}
-            getAriaLabel={index =>
-              index === 0 ? 'Minimum Area' : 'Maximum Area'
-            }
-            defaultValue={[20, 40]}
+            min={propMinSize}
+            max={propMaxSize}
+            defaultValue={[defaultMinSize, defaultMaxSize]}
+            onChange={(e, value) => {
+              const [newMinValue, newMaxValue] = value
+              setMinSize(newMinValue)
+              setMaxSize(newMaxValue)
+            }}
           />
           <div
             style={{
@@ -84,38 +106,37 @@ const SizeFilter = ({
             }}
           >
             <TextField
-              id="outlined-adornment-amount"
+              id="outlined-adornment-min"
               variant="outlined"
+              disabled
               label="Min. Area"
-              value={20}
+              value={minSize}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">SF</InputAdornment>
                 ),
               }}
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
-              id="outlined-adornment-amount"
+              id="outlined-adornment-max"
               variant="outlined"
+              disabled
               label="Max. Area"
-              value={20}
+              value={maxSize}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">SF</InputAdornment>
                 ),
               }}
+              InputLabelProps={{ shrink: true }}
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button size="small" onClick={handleClose} color="secondary">
+            <Button size="small" onClick={clearFilter} color="secondary">
               Clear
             </Button>
-            <Button
-              size="small"
-              onClick={handleClose}
-              color="primary"
-              autoFocus
-            >
+            <Button size="small" onClick={saveFilter} color="primary" autoFocus>
               Save
             </Button>
           </PopoverButtonsWrapper>

@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { SIZES, COLORS } from '../../../../shared/general/constants'
 
+import { AVAILABLE_FILTERS } from '../../../shared/graphql/queries'
+
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Typography from '@material-ui/core/Typography'
@@ -9,6 +11,7 @@ import { FilterOptionWrapper } from './components/common'
 import SizeFilter from './components/SizeFilter'
 import PriceFilter from './components/PriceFilter'
 import RoomsFilter from './components/RoomsFilter'
+import { useQuery } from '@apollo/react-hooks'
 
 const Row = styled.div`
   display: flex;
@@ -38,6 +41,9 @@ export const emptyFilters = {
 }
 
 const ActionBar = ({ showMap, setShowMap, filters, setFilters }) => {
+  const { data, loading } = useQuery(AVAILABLE_FILTERS)
+  const availableFilters = loading ? emptyFilters : data.availableFilters
+
   return (
     <Row>
       <FilterOptionsContainer>
@@ -46,9 +52,24 @@ const ActionBar = ({ showMap, setShowMap, filters, setFilters }) => {
             Filters:
           </Typography>
         </FilterOptionWrapper>
-        <SizeFilter filters={filters} setFilters={setFilters} />
-        <PriceFilter filters={filters} setFilters={setFilters} />
-        <RoomsFilter filters={filters} setFilters={setFilters} />
+        <SizeFilter
+          filters={filters}
+          setFilters={setFilters}
+          minSize={availableFilters.minSize}
+          maxSize={availableFilters.maxSize}
+        />
+        <PriceFilter
+          filters={filters}
+          setFilters={setFilters}
+          minPrice={availableFilters.minPrice}
+          maxPrice={availableFilters.maxPrice}
+        />
+        <RoomsFilter
+          filters={filters}
+          setFilters={setFilters}
+          minRooms={availableFilters.minRooms}
+          maxRooms={availableFilters.maxRooms}
+        />
       </FilterOptionsContainer>
       <FormControlLabel
         control={

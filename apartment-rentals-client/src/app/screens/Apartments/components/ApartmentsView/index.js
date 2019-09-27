@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -14,9 +14,16 @@ const Wrapper = styled.div`
 `
 
 const ApartmentsView = ({ showMap, filters }) => {
-  const { loading, data } = useQuery(APARTMENTS_QUERY, {
-    variables: { filters },
+  const { loading, data, refetch } = useQuery(APARTMENTS_QUERY, {
+    variables: {
+      filters: { ...filters.size, ...filters.price, ...filters.numberOfRooms },
+    },
   })
+
+  useEffect(() => {
+    refetch()
+  }, [filters, refetch])
+
   const apartments = (data && data.apartments) || []
   return (
     <Wrapper showMap={showMap}>

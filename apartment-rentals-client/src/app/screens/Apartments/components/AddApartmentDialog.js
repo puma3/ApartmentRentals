@@ -11,7 +11,8 @@ import MuiDialogActions from '@material-ui/core/DialogActions'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import Typography from '@material-ui/core/Typography'
-import { TextField } from '@material-ui/core'
+import { TextField, InputAdornment } from '@material-ui/core'
+import { SIZES } from '../../../shared/general/constants'
 
 const FormWrapper = styled.div`
   width: 100%;
@@ -69,7 +70,7 @@ const AddApartmentDialog = ({ open, handleClose }) => (
   <Dialog
     onClose={handleClose}
     aria-labelledby="customized-dialog-title"
-    open={true || open}
+    open={open}
     maxWidth="md"
     fullWidth
   >
@@ -93,47 +94,83 @@ const AddApartmentDialog = ({ open, handleClose }) => (
             label="Description"
             fullWidth
           />
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gridGap: SIZES['medium'],
+            }}
+          >
+            <TextField
+              autoFocus
+              margin="dense"
+              id="floorAreaSize"
+              label="Floor Area"
+              type="number"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">SF</InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="pricePerMonth"
+              label="Monthly Price"
+              type="number"
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="numberOfRooms"
+              type="number"
+              label="Rooms"
+              fullWidth
+            />
+          </div>
           <TextField
             autoFocus
             margin="dense"
-            id="floorAreaSize"
-            label="Floor Area"
+            id="address"
+            label="Address"
             fullWidth
           />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="pricePerMonth"
-            label="Monthly Price"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="numberOfRooms"
-            label="Number of Rooms"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="longitude"
-            label="Longitude"
-            fullWidth
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="latitude"
-            label="Latitude"
-            fullWidth
-          />
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gridGap: SIZES['medium'],
+            }}
+          >
+            <TextField
+              autoFocus
+              margin="dense"
+              id="longitude"
+              label="Longitude"
+              fullWidth
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="latitude"
+              label="Latitude"
+              fullWidth
+            />
+          </div>
         </form>
-        {/* <GoogleMapReact
-          bootstrapURLKeys={{ key: process.env.GOOGLE_MAPS_API_KEY }}
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g' }}
           center={[-16.3937852, -71.5182117]}
           zoom={17}
-        /> */}
+        />
       </FormWrapper>
     </DialogContent>
     <DialogActions>

@@ -23,8 +23,8 @@ export const USER_LIST_QUERY = gql`
 `
 
 export const APARTMENTS_QUERY = gql`
-  query ApartmentList {
-    apartments {
+  query ApartmentList($filters: FilterInput) {
+    apartments(filters: $filters) {
       id
       name
       address
@@ -39,7 +39,22 @@ export const APARTMENTS_QUERY = gql`
         email
         firstName
         lastName
+        __typename
       }
+      __typename
+    }
+  }
+`
+
+export const AVAILABLE_FILTERS = gql`
+  query AvailableFilters {
+    availableFilters {
+      minPrice
+      maxPrice
+      minSize
+      maxSize
+      minRooms
+      maxRooms
     }
   }
 `

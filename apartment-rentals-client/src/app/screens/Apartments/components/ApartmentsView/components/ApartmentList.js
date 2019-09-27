@@ -6,6 +6,7 @@ import CardMedia from '@material-ui/core/CardMedia'
 import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
+import { GridList } from '@material-ui/core'
 
 const horizontalStyles = makeStyles(theme => ({
   card: {
@@ -88,11 +89,11 @@ const VerticalEntry = ({ apartment }) => {
 const ApartmentList = ({ apartments, showMap }) => {
   return showMap ? (
     // Return Horizontal entries
-    <div>
+    <GridList>
       {apartments.map((apartment, idx) => (
         <HorizontalEntry apartment={apartment} key={`hv${idx}`} />
       ))}
-    </div>
+    </GridList>
   ) : (
     // Return Vertical entries
     apartments.map((apartment, idx) => (

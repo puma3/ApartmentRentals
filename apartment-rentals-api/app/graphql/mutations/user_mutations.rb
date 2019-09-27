@@ -38,7 +38,7 @@ module Mutations::UserMutations
       return GraphQL::ExecutionError.new("A user with the email #{email} already exists") if user
 
       valid_inputs = { first_name: first_name, last_name: last_name, email: email, password: password }
-      valid_inputs[:role] = role if context[:current_user].admin?
+      valid_inputs[:role] = role if context[:current_user]&.admin?
 
       user = User.new(valid_inputs)
       if user.save

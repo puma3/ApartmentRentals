@@ -75,14 +75,10 @@ const PriceMarker = ({ apartment, $hover, ...props }) => {
 }
 
 const MapView = ({ showMap, apartments }) => {
-  console.log(
-    'process.env.GOOGLE_MAPS_API_KEY',
-    process.env.GOOGLE_MAPS_API_KEY,
-  )
   return showMap ? (
     <MapContainer>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: process.env.GOOGLE_MAPS_API_KEY }}
+        bootstrapURLKeys={{ key: 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g' }}
         center={[-16.3937852, -71.5182117]}
         zoom={17}
         hoverDistance={K_HOVER_DISTANCE}

@@ -16,9 +16,11 @@ import TextField from '@material-ui/core/TextField'
 
 const PriceFilter = ({
   filters: {
-    price: { minPrice, maxPrice },
+    price: { minPrice: minPriceFilterState, maxPrice: maxPriceFilterState },
     ...rest
   },
+  minPrice: propMinPrice,
+  maxPrice: propMaxPrice,
   setFilters,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -31,17 +33,33 @@ const PriceFilter = ({
     setAnchorEl(null)
   }
 
+  const defaultMinPrice = minPriceFilterState || propMinPrice
+  const defaultMaxPrice = maxPriceFilterState || propMaxPrice
+
+  const [minPrice, setMinPrice] = useState(defaultMinPrice)
+  const [maxPrice, setMaxPrice] = useState(defaultMaxPrice)
+
+  const clearFilter = () => {
+    setFilters({ price: { minPrice: null, maxPrice: null }, ...rest })
+    handleClose()
+  }
+
+  const saveFilter = () => {
+    setFilters({ price: { minPrice, maxPrice }, ...rest })
+    handleClose()
+  }
+
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const isActive = minPrice || maxPrice
+  const isActive = minPriceFilterState || maxPriceFilterState
   let filterText = 'Price'
-  if (minPrice && maxPrice) {
-    filterText = `$ ${minPrice} - $ ${maxPrice}`
-  } else if (minPrice) {
-    filterText = `$ ${minPrice}+`
-  } else if (maxPrice) {
-    filterText = `Up to $${maxPrice}`
+  if (minPriceFilterState && maxPriceFilterState) {
+    filterText = `$ ${minPriceFilterState} - $ ${maxPriceFilterState}`
+  } else if (minPriceFilterState) {
+    filterText = `$ ${minPriceFilterState}+`
+  } else if (maxPriceFilterState) {
+    filterText = `Up to $${maxPriceFilterState}`
   }
 
   return (
@@ -71,10 +89,14 @@ const PriceFilter = ({
         <PopoverContent>
           <CustomSlider
             ThumbComponent={ThumbComponent}
-            getAriaLabel={index =>
-              index === 0 ? 'Minimum price' : 'Maximum price'
-            }
-            defaultValue={[20, 40]}
+            min={propMinPrice}
+            max={propMaxPrice}
+            defaultValue={[defaultMinPrice, defaultMaxPrice]}
+            onChange={(e, value) => {
+              const [newMinValue, newMaxValue] = value
+              setMinPrice(newMinValue)
+              setMaxPrice(newMaxValue)
+            }}
           />
           <div
             style={{
@@ -87,35 +109,32 @@ const PriceFilter = ({
               id="outlined-adornment-amount"
               variant="outlined"
               label="Min. Price"
-              value={20}
+              value={minPrice}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
               id="outlined-adornment-amount"
               variant="outlined"
               label="Max. Price"
-              value={20}
+              value={maxPrice}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">$</InputAdornment>
                 ),
               }}
+              InputLabelProps={{ shrink: true }}
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button size="small" onClick={handleClose} color="secondary">
+            <Button size="small" onClick={clearFilter} color="secondary">
               Clear
             </Button>
-            <Button
-              size="small"
-              onClick={handleClose}
-              color="primary"
-              autoFocus
-            >
+            <Button size="small" onClick={saveFilter} color="primary" autoFocus>
               Save
             </Button>
           </PopoverButtonsWrapper>

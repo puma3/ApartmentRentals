@@ -15,9 +15,14 @@ import TextField from '@material-ui/core/TextField'
 
 const RoomsFilter = ({
   filters: {
-    numberOfRooms: { minRooms, maxRooms },
+    numberOfRooms: {
+      minRooms: minRoomsFilterState,
+      maxRooms: maxRoomsFilterState,
+    },
     ...rest
   },
+  minRooms: propMinRooms,
+  maxRooms: propMaxRooms,
   setFilters,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -30,17 +35,33 @@ const RoomsFilter = ({
     setAnchorEl(null)
   }
 
+  const defaultMinRooms = minRoomsFilterState || propMinRooms
+  const defaultMaxRooms = maxRoomsFilterState || propMaxRooms
+
+  const [minRooms, setMinRooms] = useState(defaultMinRooms)
+  const [maxRooms, setMaxRooms] = useState(defaultMaxRooms)
+
+  const clearFilter = () => {
+    setFilters({ numberOfRooms: { minRooms: null, maxRooms: null }, ...rest })
+    handleClose()
+  }
+
+  const saveFilter = () => {
+    setFilters({ numberOfRooms: { minRooms, maxRooms }, ...rest })
+    handleClose()
+  }
+
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const isActive = minRooms || maxRooms
+  const isActive = minRoomsFilterState || maxRoomsFilterState
   let filterText = 'Rooms'
-  if (minRooms && maxRooms) {
-    filterText = `${minRooms} - ${maxRooms} Rooms`
-  } else if (minRooms) {
-    filterText = `${minRooms}+ Rooms`
-  } else if (maxRooms) {
-    filterText = `Up to ${maxRooms} Rooms`
+  if (minRoomsFilterState && maxRoomsFilterState) {
+    filterText = `${minRoomsFilterState} - ${maxRoomsFilterState} Rooms`
+  } else if (minRoomsFilterState) {
+    filterText = `${minRoomsFilterState}+ Rooms`
+  } else if (maxRoomsFilterState) {
+    filterText = `Up to ${maxRoomsFilterState} Rooms`
   }
 
   return (
@@ -70,10 +91,14 @@ const RoomsFilter = ({
         <PopoverContent>
           <CustomSlider
             ThumbComponent={ThumbComponent}
-            getAriaLabel={index =>
-              index === 0 ? 'Minimum Rooms' : 'Maximum Rooms'
-            }
-            defaultValue={[20, 40]}
+            min={propMinRooms}
+            max={propMaxRooms}
+            defaultValue={[defaultMinRooms, defaultMaxRooms]}
+            onChange={(e, value) => {
+              const [newMinValue, newMaxValue] = value
+              setMinRooms(newMinValue)
+              setMaxRooms(newMaxValue)
+            }}
           />
           <div
             style={{
@@ -86,25 +111,22 @@ const RoomsFilter = ({
               id="outlined-adornment-amount"
               variant="outlined"
               label="Min. Rooms"
-              value={20}
+              value={minRooms}
+              InputLabelProps={{ shrink: true }}
             />
             <TextField
               id="outlined-adornment-amount"
               variant="outlined"
               label="Max. Rooms"
-              value={20}
+              value={maxRooms}
+              InputLabelProps={{ shrink: true }}
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button size="small" onClick={handleClose} color="secondary">
+            <Button size="small" onClick={clearFilter} color="secondary">
               Clear
             </Button>
-            <Button
-              size="small"
-              onClick={handleClose}
-              color="primary"
-              autoFocus
-            >
+            <Button size="small" onClick={saveFilter} color="primary" autoFocus>
               Save
             </Button>
           </PopoverButtonsWrapper>
