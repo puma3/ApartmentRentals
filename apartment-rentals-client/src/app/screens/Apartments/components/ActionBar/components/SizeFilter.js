@@ -108,7 +108,6 @@ const SizeFilter = ({
             <TextField
               id="outlined-adornment-min"
               variant="outlined"
-              disabled
               label="Min. Area"
               value={minSize}
               InputProps={{
@@ -121,7 +120,6 @@ const SizeFilter = ({
             <TextField
               id="outlined-adornment-max"
               variant="outlined"
-              disabled
               label="Max. Area"
               value={maxSize}
               InputProps={{

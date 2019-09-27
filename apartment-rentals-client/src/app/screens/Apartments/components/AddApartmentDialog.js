@@ -88,7 +88,6 @@ const AddApartmentDialog = ({ open, handleClose }) => (
             fullWidth
           />
           <TextField
-            autoFocus
             margin="dense"
             id="description"
             label="Description"
@@ -102,7 +101,6 @@ const AddApartmentDialog = ({ open, handleClose }) => (
             }}
           >
             <TextField
-              autoFocus
               margin="dense"
               id="floorAreaSize"
               label="Floor Area"
@@ -115,7 +113,6 @@ const AddApartmentDialog = ({ open, handleClose }) => (
               }}
             />
             <TextField
-              autoFocus
               margin="dense"
               id="pricePerMonth"
               label="Monthly Price"
@@ -128,7 +125,6 @@ const AddApartmentDialog = ({ open, handleClose }) => (
               }}
             />
             <TextField
-              autoFocus
               margin="dense"
               id="numberOfRooms"
               type="number"
@@ -136,13 +132,7 @@ const AddApartmentDialog = ({ open, handleClose }) => (
               fullWidth
             />
           </div>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="address"
-            label="Address"
-            fullWidth
-          />
+          <TextField margin="dense" id="address" label="Address" fullWidth />
           <div
             style={{
               display: 'grid',
@@ -151,14 +141,12 @@ const AddApartmentDialog = ({ open, handleClose }) => (
             }}
           >
             <TextField
-              autoFocus
               margin="dense"
               id="longitude"
               label="Longitude"
               fullWidth
             />
             <TextField
-              autoFocus
               margin="dense"
               id="latitude"
               label="Latitude"

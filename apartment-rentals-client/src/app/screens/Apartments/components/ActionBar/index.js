@@ -44,6 +44,8 @@ const ActionBar = ({ showMap, setShowMap, filters, setFilters }) => {
   const { data, loading } = useQuery(AVAILABLE_FILTERS)
   const availableFilters = loading ? emptyFilters : data.availableFilters
 
+  if (loading) return null
+
   return (
     <Row>
       <FilterOptionsContainer>

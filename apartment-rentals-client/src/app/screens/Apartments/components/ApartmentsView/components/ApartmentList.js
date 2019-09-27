@@ -1,5 +1,6 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import styled from 'styled-components'
 
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -7,6 +8,8 @@ import IconButton from '@material-ui/core/IconButton'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
 import { GridList } from '@material-ui/core'
+import { SIZES } from '../../../../../shared/general/constants'
+import AuthorizedView from '../../../../layouts/AuthorizedView'
 
 const horizontalStyles = makeStyles(theme => ({
   card: {
@@ -21,30 +24,74 @@ const horizontalStyles = makeStyles(theme => ({
   },
 }))
 
-const HorizontalEntry = ({ apartment }) => {
+const ApartmentInfoContainer = styled.div`
+  padding: ${SIZES['small']} ${SIZES['large']};
+`
+
+const HorizontalEntry = ({ apartment, apartment: { realtor } }) => {
   const classes = horizontalStyles()
 
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image="https://img.staticmb.com/mbimages/project/Photo_h310_w462/Project-Photo-19-Global-Apartment-Phase-II-Patna-5093703_345_1366_310_462.jpg"
+        image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
         title="Ted talk"
       />
-      <div>
-        <IconButton aria-label="settings">
-          <MoreVertIcon />
-        </IconButton>
-        <Typography variant="body1" color="textPrimary" component="p">
-          {apartment.name}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {apartment.description}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {`${apartment.floorAreaSize}m2 - ${apartment.numberOfRooms} rooms`}
-        </Typography>
-      </div>
+      <ApartmentInfoContainer>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6" color="textPrimary" component="p">
+            {apartment.name}
+          </Typography>
+          <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
+            <IconButton size="small">
+              <MoreVertIcon />
+            </IconButton>
+          </AuthorizedView>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '80%',
+          }}
+        >
+          <div>
+            <Typography variant="body1" color="textSecondary" component="p">
+              {apartment.description}
+            </Typography>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {`$ ${apartment.pricePerMonth} \u2022 ${
+                apartment.floorAreaSize
+              } sqft \u2022 ${apartment.numberOfRooms} ${
+                apartment.numberOfRooms === 1 ? 'Room' : 'Rooms'
+              }`}
+            </Typography>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body1" color="textSecondary" component="p">
+              Realtor: {realtor.firstName} {realtor.lastName}
+            </Typography>
+            {apartment.available ? (
+              <Typography variant="body1" color="primary" component="p">
+                Available
+              </Typography>
+            ) : (
+              <Typography variant="body1" color="secondary" component="p">
+                Unavailable
+              </Typography>
+            )}
+          </div>
+        </div>
+      </ApartmentInfoContainer>
     </Card>
   )
 }
@@ -59,29 +106,65 @@ const verticalStyles = makeStyles(theme => ({
   },
 }))
 
-const VerticalEntry = ({ apartment }) => {
+const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
   const classes = verticalStyles()
 
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image="https://img.staticmb.com/mbimages/project/Photo_h310_w462/Project-Photo-19-Global-Apartment-Phase-II-Patna-5093703_345_1366_310_462.jpg"
+        image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
         title="Ted talk"
       />
 
-      <IconButton aria-label="settings">
-        <MoreVertIcon />
-      </IconButton>
-      <Typography variant="body1" color="textPrimary" component="p">
-        {apartment.name}
-      </Typography>
-      <Typography variant="body2" color="textSecondary" component="p">
-        {apartment.description}
-      </Typography>
-      <Typography variant="body2" color="textSecondary" component="p">
-        {`${apartment.floorAreaSize}m2 - ${apartment.numberOfRooms} rooms`}
-      </Typography>
+      <ApartmentInfoContainer>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h6" color="textPrimary" component="p">
+            {apartment.name}
+          </Typography>
+          <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
+            <IconButton size="small">
+              <MoreVertIcon />
+            </IconButton>
+          </AuthorizedView>
+        </div>
+        <Typography variant="body1" color="textSecondary" component="p">
+          {apartment.description}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {`$ ${apartment.pricePerMonth} \u2022 ${
+            apartment.floorAreaSize
+          } sqft \u2022 ${apartment.numberOfRooms} ${
+            apartment.numberOfRooms === 1 ? 'Room' : 'Rooms'
+          }`}
+        </Typography>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            marginTop: SIZES['medium'],
+          }}
+        >
+          <Typography variant="body1" color="textSecondary" component="p">
+            Realtor: {realtor.firstName} {realtor.lastName}
+          </Typography>
+          {apartment.available ? (
+            <Typography variant="body1" color="primary" component="p">
+              Available
+            </Typography>
+          ) : (
+            <Typography variant="body1" color="secondary" component="p">
+              Unavailable
+            </Typography>
+          )}
+        </div>
+      </ApartmentInfoContainer>
     </Card>
   )
 }
