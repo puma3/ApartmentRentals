@@ -6,6 +6,9 @@ import { APARTMENTS_QUERY } from '../../../shared/graphql/queries'
 
 import ApartmentList from './components/ApartmentList'
 import Map from './components/MapView'
+import AuthorizedView from '../../../layouts/AuthorizedView'
+import EditApartmentDialog from '../AddApartmentDialog'
+import { booleanTypeAnnotation } from '@babel/types'
 
 const Wrapper = styled.div`
   display: grid;
@@ -29,6 +32,11 @@ const ApartmentsView = ({ showMap, filters }) => {
   const apartments = (data && data.apartments) || []
 
   const [defaultLatLng, setDefaultLatLng] = useState(initialLatLng)
+  const [apartmentToEdit, setApartmentToEdit] = useState(null)
+
+  const handleClose = () => {
+    setApartmentToEdit(null)
+  }
 
   useEffect(() => {
     const first = data && data.apartments[0]
@@ -44,12 +52,20 @@ const ApartmentsView = ({ showMap, filters }) => {
         showMap={showMap}
         loading={loading}
         setDefaultLatLng={setDefaultLatLng}
+        setApartmentToEdit={setApartmentToEdit}
       />
       <Map
         apartments={apartments}
         showMap={showMap}
         defaultLatLng={defaultLatLng}
       />
+      <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
+        <EditApartmentDialog
+          open={Boolean(apartmentToEdit)}
+          apartment={apartmentToEdit}
+          handleClose={handleClose}
+        />
+      </AuthorizedView>
     </Wrapper>
   )
 }

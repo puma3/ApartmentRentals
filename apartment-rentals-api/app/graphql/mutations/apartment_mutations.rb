@@ -46,6 +46,7 @@ module Mutations::ApartmentMutations
     argument :longitude, Float, required: false
     argument :longitude, Float, required: false
     argument :available, Boolean, required: false
+    argument :realtor_email, String, required: true
 
     field :apartment, Types::ModelTypes::ApartmentType, null: true
     description 'Updates an Apartment'
@@ -57,9 +58,13 @@ module Mutations::ApartmentMutations
       apartment = Apartment.find_by_id(arguments[:id])
       return GraphQL::ExecutionError.new('Please provide a correct apartment ID') unless apartment
 
-      valid_inputs = arguments.to_h.except(:id)
+      realtor = User.find_for_authentication(email: arguments[:realtor_email]) if arguments[:realtor_email]
+      return GraphQL::ExecutionError.new('An existing realtor email is required') if !realtor && arguments[:realtor_email]
+
+      valid_inputs = arguments.to_h.except(:id, :realtor_email)
 
       apartment.assign_attributes(valid_inputs)
+      apartment.realtor = realtor if realtor
       if apartment.save
         { apartment: apartment }
       else

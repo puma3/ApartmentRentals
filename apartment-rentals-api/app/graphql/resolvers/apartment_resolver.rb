@@ -8,7 +8,7 @@ module Resolvers::ApartmentResolver
 
     def resolve(filters: nil)
       condition = {}
-      condition[:available] = true if context[:current_user] == 'client'
+      condition[:available] = true if context[:current_user].client?
 
       filters = filters.to_h
 

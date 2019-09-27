@@ -23,7 +23,10 @@ import {
 import { SIZES } from '../../../shared/general/constants'
 import RoomIcon from '@material-ui/icons/Room'
 import { useMutation, useQuery } from '@apollo/react-hooks'
-import { CREATE_APARTMENT_MUTATION } from '../../shared/graphql/mutations'
+import {
+  CREATE_APARTMENT_MUTATION,
+  UPDATE_APARTMENT_MUTATION,
+} from '../../shared/graphql/mutations'
 import { USER_LIST_QUERY } from '../../shared/graphql/queries'
 
 const GOOGLE_MAPS_API_KEY = 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g'
@@ -92,8 +95,11 @@ const DialogActions = withStyles(theme => ({
   },
 }))(MuiDialogActions)
 
-const AddApartmentDialog = ({ open, handleClose }) => {
+const AddApartmentDialog = ({ open, handleClose, apartment }) => {
   const [createApartmentMutation] = useMutation(CREATE_APARTMENT_MUTATION, {
+    refetchQueries: ['ApartmentList'],
+  })
+  const [updateApartmentMutation] = useMutation(UPDATE_APARTMENT_MUTATION, {
     refetchQueries: ['ApartmentList'],
   })
 
@@ -103,15 +109,37 @@ const AddApartmentDialog = ({ open, handleClose }) => {
     },
   })
 
-  const [name, setName] = useState(null)
-  const [description, setDescription] = useState(null)
-  const [size, setSize] = useState(0)
-  const [price, setPrice] = useState(0)
-  const [rooms, setRooms] = useState(0)
-  const [latitude, setLatitude] = useState(null)
-  const [longitude, setLongitude] = useState(null)
-  const [address, setAddress] = useState('')
-  const [realtorEmail, setRealtorEmail] = useState('')
+  const [name, setName] = useState(apartment ? apartment.name : null)
+  const [description, setDescription] = useState(
+    apartment ? apartment.description : null,
+  )
+  const [size, setSize] = useState(apartment ? apartment.floorAreaSize : 0)
+  const [price, setPrice] = useState(apartment ? apartment.pricePerMonth : 0)
+  const [rooms, setRooms] = useState(apartment ? apartment.numberOfRooms : 0)
+  const [latitude, setLatitude] = useState(
+    apartment ? apartment.latitude : null,
+  )
+  const [longitude, setLongitude] = useState(
+    apartment ? apartment.longitude : null,
+  )
+  const [address, setAddress] = useState(apartment ? apartment.address : '')
+  const [realtorEmail, setRealtorEmail] = useState(
+    apartment ? apartment.realtor.email : '',
+  )
+
+  useEffect(() => {
+    if (!apartment) return
+
+    setName(apartment.name)
+    setDescription(apartment.description)
+    setSize(apartment.floorAreaSize)
+    setPrice(apartment.pricePerMonth)
+    setRooms(apartment.numberOfRooms)
+    setLatitude(apartment.latitude)
+    setLongitude(apartment.longitude)
+    setAddress(apartment.address)
+    setRealtorEmail(apartment.realtor.email)
+  }, [apartment])
 
   const onMapClick = ({ lat, lng }) => {
     setLatitude(Math.round(lat * 100000000) / 100000000)
@@ -135,22 +163,40 @@ const AddApartmentDialog = ({ open, handleClose }) => {
   const submitForm = e => {
     e.preventDefault()
 
-    createApartmentMutation({
-      variables: {
-        input: {
-          name,
-          description,
-          pricePerMonth: parseFloat(price),
-          floorAreaSize: parseFloat(size),
-          numberOfRooms: parseInt(rooms),
-          address,
-          latitude,
-          longitude,
-          realtorEmail,
+    if (!apartment) {
+      createApartmentMutation({
+        variables: {
+          input: {
+            name,
+            description,
+            pricePerMonth: parseFloat(price),
+            floorAreaSize: parseFloat(size),
+            numberOfRooms: parseInt(rooms),
+            address,
+            latitude,
+            longitude,
+            realtorEmail,
+          },
         },
-      },
-      refetchQueries: ['ApartmentList'],
-    })
+      })
+    } else {
+      updateApartmentMutation({
+        variables: {
+          input: {
+            id: apartment.id,
+            name,
+            description,
+            pricePerMonth: parseFloat(price),
+            floorAreaSize: parseFloat(size),
+            numberOfRooms: parseInt(rooms),
+            address,
+            latitude,
+            longitude,
+            realtorEmail,
+          },
+        },
+      })
+    }
     handleClose()
   }
 
@@ -296,7 +342,10 @@ const AddApartmentDialog = ({ open, handleClose }) => {
                 <MenuItem value="">No Realtor Users</MenuItem>
               ) : (
                 realtorsData.users.map(realtor => (
-                  <MenuItem value={realtor.email}>
+                  <MenuItem
+                    key={`realtor${realtor.email}item`}
+                    value={realtor.email}
+                  >
                     {realtor.firstName} {realtor.lastName}
                   </MenuItem>
                 ))
@@ -323,7 +372,7 @@ const AddApartmentDialog = ({ open, handleClose }) => {
       </DialogContent>
       <DialogActions>
         <Button type="submit" form="create-apartment-form" color="primary">
-          Add Apartment
+          {apartment ? 'Edit Apartment' : 'Add Apartment'}
         </Button>
       </DialogActions>
     </Dialog>

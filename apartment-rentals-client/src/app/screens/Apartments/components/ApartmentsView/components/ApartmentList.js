@@ -43,7 +43,7 @@ const ApartmentInfoContainer = styled.div`
   padding: ${SIZES['small']} ${SIZES['large']};
 `
 
-const ApartmentMenu = ({ apartment }) => {
+const ApartmentMenu = ({ apartment, setApartmentToEdit }) => {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
   const [updateApartmentMutation] = useMutation(UPDATE_APARTMENT_MUTATION)
@@ -94,7 +94,14 @@ const ApartmentMenu = ({ apartment }) => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleClose()
+            setApartmentToEdit(apartment)
+          }}
+        >
+          Edit
+        </MenuItem>
         <MenuItem
           onClick={() => {
             handleClose()
@@ -131,6 +138,7 @@ const HorizontalEntry = ({
   apartment,
   apartment: { realtor },
   setDefaultLatLng,
+  setApartmentToEdit,
 }) => {
   const classes = horizontalStyles()
 
@@ -147,7 +155,7 @@ const HorizontalEntry = ({
         <CardMedia
           className={classes.media}
           image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
-          title="Ted talk"
+          title="Apartment Photograph"
         />
         <ApartmentInfoContainer>
           <div
@@ -161,7 +169,10 @@ const HorizontalEntry = ({
               {apartment.name}
             </Typography>
             <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
-              <ApartmentMenu apartment={apartment} />
+              <ApartmentMenu
+                apartment={apartment}
+                setApartmentToEdit={setApartmentToEdit}
+              />
             </AuthorizedView>
           </div>
 
@@ -219,7 +230,11 @@ const verticalStyles = makeStyles(theme => ({
   },
 }))
 
-const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
+const VerticalEntry = ({
+  apartment,
+  apartment: { realtor },
+  setApartmentToEdit,
+}) => {
   const classes = verticalStyles()
 
   return (
@@ -227,7 +242,7 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
       <CardMedia
         className={classes.media}
         image="https://media.architecturaldigest.in/wp-content/uploads/2018/04/All-photos-by-Kunal-Bhatia-866x487.jpg"
-        title="Ted talk"
+        title="Apartment Photograph"
       />
 
       <ApartmentInfoContainer>
@@ -242,7 +257,7 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
             {apartment.name}
           </Typography>
           <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
-            <ApartmentMenu />
+            <ApartmentMenu setApartmentToEdit={setApartmentToEdit} />
           </AuthorizedView>
         </div>
         <Typography variant="body1" color="textSecondary" component="p">
@@ -280,7 +295,12 @@ const VerticalEntry = ({ apartment, apartment: { realtor } }) => {
   )
 }
 
-const ApartmentList = ({ apartments, showMap, setDefaultLatLng }) => {
+const ApartmentList = ({
+  apartments,
+  showMap,
+  setDefaultLatLng,
+  setApartmentToEdit,
+}) => {
   return showMap ? (
     // Return Horizontal entries
     <GridList>
@@ -289,6 +309,7 @@ const ApartmentList = ({ apartments, showMap, setDefaultLatLng }) => {
           apartment={apartment}
           key={`hv${idx}`}
           setDefaultLatLng={setDefaultLatLng}
+          setApartmentToEdit={setApartmentToEdit}
         />
       ))}
     </GridList>
@@ -296,7 +317,11 @@ const ApartmentList = ({ apartments, showMap, setDefaultLatLng }) => {
     // Return Vertical entries
     <GridList>
       {apartments.map((apartment, idx) => (
-        <VerticalEntry apartment={apartment} key={`vv${idx}`} />
+        <VerticalEntry
+          apartment={apartment}
+          key={`vv${idx}`}
+          setApartmentToEdit={setApartmentToEdit}
+        />
       ))}
     </GridList>
   )
