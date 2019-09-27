@@ -14,6 +14,7 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: ${({ showMap }) =>
     showMap ? 'minmax(620px, 1fr) 1fr' : 'auto'};
+  height: calc(100% - 113px);
 `
 
 const initialLatLng = { lat: -16.3937852, lng: -71.5182117 }

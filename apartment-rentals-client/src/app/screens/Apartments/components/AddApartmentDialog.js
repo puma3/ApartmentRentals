@@ -99,9 +99,7 @@ const AddApartmentDialog = ({ open, handleClose, apartment }) => {
   const [createApartmentMutation] = useMutation(CREATE_APARTMENT_MUTATION, {
     refetchQueries: ['ApartmentList'],
   })
-  const [updateApartmentMutation] = useMutation(UPDATE_APARTMENT_MUTATION, {
-    refetchQueries: ['ApartmentList'],
-  })
+  const [updateApartmentMutation] = useMutation(UPDATE_APARTMENT_MUTATION)
 
   const { loading, data: realtorsData } = useQuery(USER_LIST_QUERY, {
     variables: {

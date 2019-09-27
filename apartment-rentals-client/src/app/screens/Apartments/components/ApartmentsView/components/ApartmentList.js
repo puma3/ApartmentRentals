@@ -303,16 +303,18 @@ const ApartmentList = ({
 }) => {
   return showMap ? (
     // Return Horizontal entries
-    <GridList>
-      {apartments.map((apartment, idx) => (
-        <HorizontalEntry
-          apartment={apartment}
-          key={`hv${idx}`}
-          setDefaultLatLng={setDefaultLatLng}
-          setApartmentToEdit={setApartmentToEdit}
-        />
-      ))}
-    </GridList>
+    <div style={{ overflowY: 'auto', overflowX: 'hidden' }}>
+      <GridList>
+        {apartments.map((apartment, idx) => (
+          <HorizontalEntry
+            apartment={apartment}
+            key={`hv${idx}`}
+            setDefaultLatLng={setDefaultLatLng}
+            setApartmentToEdit={setApartmentToEdit}
+          />
+        ))}
+      </GridList>
+    </div>
   ) : (
     // Return Vertical entries
     <GridList>
