@@ -21,3 +21,25 @@ export const USER_LIST_QUERY = gql`
     }
   }
 `
+
+export const APARTMENTS_QUERY = gql`
+  query ApartmentList {
+    apartments {
+      id
+      name
+      address
+      pricePerMonth
+      available
+      description
+      numberOfRooms
+      floorAreaSize
+      latitude
+      longitude
+      realtor {
+        email
+        firstName
+        lastName
+      }
+    }
+  }
+`

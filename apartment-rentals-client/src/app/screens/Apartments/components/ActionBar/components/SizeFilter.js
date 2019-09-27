@@ -14,7 +14,13 @@ import { CustomSlider, ThumbComponent } from './CustomSlider'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '@material-ui/core/TextField'
 
-const SizeFilter = () => {
+const SizeFilter = ({
+  filters: {
+    size: { minSize, maxSize },
+    ...rest
+  },
+  setFilters,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = event => {
@@ -28,10 +34,25 @@ const SizeFilter = () => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const isActive = minSize || maxSize
+  let filterText = 'Size'
+  if (minSize && maxSize) {
+    filterText = `${minSize} SF - ${maxSize} SF`
+  } else if (minSize) {
+    filterText = `${minSize}+ SF`
+  } else if (maxSize) {
+    filterText = `Up to ${maxSize} SF`
+  }
+
   return (
     <FilterOptionWrapper>
-      <FilterButton variant="outlined" color="primary" onClick={handleClick}>
-        Size
+      <FilterButton
+        variant={isActive ? 'contained' : 'outlined'}
+        color="primary"
+        onClick={handleClick}
+        size="small"
+      >
+        {filterText}
       </FilterButton>
       <Popover
         id={id}
@@ -69,7 +90,7 @@ const SizeFilter = () => {
               value={20}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">m2</InputAdornment>
+                  <InputAdornment position="end">SF</InputAdornment>
                 ),
               }}
             />
@@ -80,16 +101,21 @@ const SizeFilter = () => {
               value={20}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">m2</InputAdornment>
+                  <InputAdornment position="end">SF</InputAdornment>
                 ),
               }}
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button onClick={handleClose} color="secondary">
+            <Button size="small" onClick={handleClose} color="secondary">
               Clear
             </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
+            <Button
+              size="small"
+              onClick={handleClose}
+              color="primary"
+              autoFocus
+            >
               Save
             </Button>
           </PopoverButtonsWrapper>

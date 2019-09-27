@@ -31,10 +31,13 @@ export const emptyFilters = {
     minPrice: null,
     maxPrice: null,
   },
-  numberOfRooms: null,
+  numberOfRooms: {
+    minRooms: null,
+    maxRooms: null,
+  },
 }
 
-const ActionBar = ({ showMap, setShowMap }) => {
+const ActionBar = ({ showMap, setShowMap, filters, setFilters }) => {
   return (
     <Row>
       <FilterOptionsContainer>
@@ -43,9 +46,9 @@ const ActionBar = ({ showMap, setShowMap }) => {
             Filters:
           </Typography>
         </FilterOptionWrapper>
-        <SizeFilter />
-        <PriceFilter />
-        <RoomsFilter />
+        <SizeFilter filters={filters} setFilters={setFilters} />
+        <PriceFilter filters={filters} setFilters={setFilters} />
+        <RoomsFilter filters={filters} setFilters={setFilters} />
       </FilterOptionsContainer>
       <FormControlLabel
         control={

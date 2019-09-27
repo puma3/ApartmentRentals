@@ -13,7 +13,13 @@ import Popover from '@material-ui/core/Popover'
 import { CustomSlider, ThumbComponent } from './CustomSlider'
 import TextField from '@material-ui/core/TextField'
 
-const RoomsFilter = () => {
+const RoomsFilter = ({
+  filters: {
+    numberOfRooms: { minRooms, maxRooms },
+    ...rest
+  },
+  setFilters,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = event => {
@@ -27,10 +33,25 @@ const RoomsFilter = () => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const isActive = minRooms || maxRooms
+  let filterText = 'Rooms'
+  if (minRooms && maxRooms) {
+    filterText = `${minRooms} - ${maxRooms} Rooms`
+  } else if (minRooms) {
+    filterText = `${minRooms}+ Rooms`
+  } else if (maxRooms) {
+    filterText = `Up to ${maxRooms} Rooms`
+  }
+
   return (
     <FilterOptionWrapper>
-      <FilterButton variant="outlined" color="primary" onClick={handleClick}>
-        Rooms
+      <FilterButton
+        variant={isActive ? 'contained' : 'outlined'}
+        color="primary"
+        onClick={handleClick}
+        size="small"
+      >
+        {filterText}
       </FilterButton>
       <Popover
         id={id}
@@ -75,10 +96,15 @@ const RoomsFilter = () => {
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button onClick={handleClose} color="secondary">
+            <Button size="small" onClick={handleClose} color="secondary">
               Clear
             </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
+            <Button
+              size="small"
+              onClick={handleClose}
+              color="primary"
+              autoFocus
+            >
               Save
             </Button>
           </PopoverButtonsWrapper>

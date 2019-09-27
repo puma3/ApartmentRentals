@@ -7,6 +7,7 @@ import ApartmentsView from './components/ApartmentsView'
 import AuthorizedView from '../layouts/AuthorizedView'
 import AddIcon from '@material-ui/icons/Add'
 import Fab from '@material-ui/core/Fab'
+import AddApartmentDialog from './components/AddApartmentDialog'
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -21,6 +22,14 @@ const Apartments = ({ match }) => {
   const [filters, setFilters] = useState(emptyFilters)
   const [showMap, setShowMap] = useState(true)
 
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const handleClickOpen = () => {
+    setAddDialogOpen(true)
+  }
+  const handleClose = () => {
+    setAddDialogOpen(false)
+  }
+
   return (
     <React.Fragment>
       <MainViewLayout>
@@ -33,9 +42,15 @@ const Apartments = ({ match }) => {
         <ApartmentsView showMap={showMap} filters={filters} />
       </MainViewLayout>
       <AuthorizedView allowedRoles={['ADMIN', 'REALTOR']}>
-        <Fab color="secondary" aria-label="add" className={classes.fab}>
+        <Fab
+          color="secondary"
+          aria-label="add"
+          className={classes.fab}
+          onClick={handleClickOpen}
+        >
           <AddIcon />
         </Fab>
+        <AddApartmentDialog open={addDialogOpen} handleClose={handleClose} />
       </AuthorizedView>
     </React.Fragment>
   )

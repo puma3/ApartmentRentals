@@ -1,30 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@apollo/react-hooks'
-import gql from 'graphql-tag'
+
+import { APARTMENTS_QUERY } from '../../../shared/graphql/queries'
 
 import ApartmentList from './components/ApartmentList'
 import Map from './components/MapView'
-
-const APARTMENTS_QUERY = gql`
-  query ApartmentList {
-    apartments {
-      name
-      address
-      available
-      description
-      numberOfRooms
-      floorAreaSize
-      latitude
-      longitude
-      realtor {
-        email
-        firstName
-        lastName
-      }
-    }
-  }
-`
 
 const Wrapper = styled.div`
   display: grid;

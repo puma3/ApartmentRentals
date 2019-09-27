@@ -14,7 +14,13 @@ import { CustomSlider, ThumbComponent } from './CustomSlider'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import TextField from '@material-ui/core/TextField'
 
-const PriceFilter = () => {
+const PriceFilter = ({
+  filters: {
+    price: { minPrice, maxPrice },
+    ...rest
+  },
+  setFilters,
+}) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleClick = event => {
@@ -28,10 +34,25 @@ const PriceFilter = () => {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
+  const isActive = minPrice || maxPrice
+  let filterText = 'Price'
+  if (minPrice && maxPrice) {
+    filterText = `$ ${minPrice} - $ ${maxPrice}`
+  } else if (minPrice) {
+    filterText = `$ ${minPrice}+`
+  } else if (maxPrice) {
+    filterText = `Up to $${maxPrice}`
+  }
+
   return (
     <FilterOptionWrapper>
-      <FilterButton variant="outlined" color="primary" onClick={handleClick}>
-        Price
+      <FilterButton
+        variant={isActive ? 'contained' : 'outlined'}
+        color="primary"
+        onClick={handleClick}
+        size="small"
+      >
+        {filterText}
       </FilterButton>
       <Popover
         id={id}
@@ -86,10 +107,15 @@ const PriceFilter = () => {
             />
           </div>
           <PopoverButtonsWrapper>
-            <Button onClick={handleClose} color="secondary">
+            <Button size="small" onClick={handleClose} color="secondary">
               Clear
             </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
+            <Button
+              size="small"
+              onClick={handleClose}
+              color="primary"
+              autoFocus
+            >
               Save
             </Button>
           </PopoverButtonsWrapper>
