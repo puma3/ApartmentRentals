@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core'
 
 import Button from '@material-ui/core/Button'
 import GoogleMapReact from 'google-map-react'
+import Popover from '@material-ui/core/Popover'
 
 const MapContainer = styled.div`
   height: 100%;
@@ -28,33 +29,63 @@ const MapMarker = styled.div`
     padding: 11px;
     background: #3f51b5;
     color: #ffffff !important;
-    letter-spacing: 1px;
     box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
     transition: all 0.3s ease 0s;
     z-index: 100;
   }
 `
 
-const PriceMarker = ({ apartment }) => {
-  const [hovered, setHovered] = useState(false)
+const K_HOVER_DISTANCE = 30
+
+const PriceMarker = ({ apartment, $hover, ...props }) => {
+  // const [anchorEl, setAnchorEl] = useState(null)
+
+  // const handleClick = event => {
+  //   setAnchorEl(event.currentTarget)
+  // }
+
+  // const handleClose = () => {
+  //   setAnchorEl(null)
+  // }
 
   return (
-    <MapMarker
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <span>$ {apartment.pricePerMonth}</span>
-    </MapMarker>
+    <div>
+      {/* {!anchorEl ? ( */}
+      <MapMarker>$ {apartment.pricePerMonth}</MapMarker>
+      {/* ) : (
+        <Popover
+          id={`${apartment.id}-popover`}
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+        >
+          <MapMarker>$ {apartment.pricePerMonth}</MapMarker>
+        </Popover>
+      )} */}
+    </div>
   )
 }
 
 const MapView = ({ showMap, apartments }) => {
+  console.log(
+    'process.env.GOOGLE_MAPS_API_KEY',
+    process.env.GOOGLE_MAPS_API_KEY,
+  )
   return showMap ? (
     <MapContainer>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: 'AIzaSyC-Hk5zO9bubN_xy_R5ktlH2L0uTeTYp_g' }}
+        bootstrapURLKeys={{ key: process.env.GOOGLE_MAPS_API_KEY }}
         center={[-16.3937852, -71.5182117]}
         zoom={17}
+        hoverDistance={K_HOVER_DISTANCE}
       >
         {apartments.map(apartment => (
           <PriceMarker

@@ -6,6 +6,8 @@ import * as serviceWorker from './serviceWorker'
 
 import App from './app/index'
 
+require('dotenv').config()
+
 const render = Root => {
   ReactDOM.render(
     <ApolloProvider client={client}>
